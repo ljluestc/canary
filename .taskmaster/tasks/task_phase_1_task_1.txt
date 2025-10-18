@@ -1,0 +1,11 @@
+# Task ID: phase_1_task_1
+# Title: Create Terraform configurations for kind cluster
+# Status: pending
+# Dependencies: None
+# Priority: critical
+# Description: 
+# Details:
+
+
+# Test Strategy:
+

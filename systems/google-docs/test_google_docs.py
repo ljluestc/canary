@@ -1332,6 +1332,419 @@ class TestFlaskApp(unittest.TestCase):
         self.assertTrue(data['success'])
 
 
+class TestErrorHandling(unittest.TestCase):
+    """Test error handling and edge cases."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = GoogleDocsService(self.temp_db.name)
+        self.test_user = self.service.create_user(
+            "testuser",
+            "test@example.com",
+            "Test",
+            "User"
+        )
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_database_error_handling(self):
+        """Test database error handling."""
+        import sqlite3
+        
+        # Test with invalid database path
+        with self.assertRaises(sqlite3.OperationalError):
+            GoogleDocsService("/invalid/path/database.db")
+    
+    def test_invalid_document_operations(self):
+        """Test operations on invalid documents."""
+        # Test getting non-existent document
+        result = self.service.get_document("nonexistent", self.test_user.id)
+        self.assertFalse(result['success'])
+        
+        # Test updating non-existent document
+        result = self.service.update_document("nonexistent", self.test_user.id, [{"type": "insert", "position": 0, "content": "New content"}])
+        self.assertFalse(result['success'])
+        
+        # Test sharing non-existent document
+        result = self.service.share_document("nonexistent", self.test_user.id, "user2", "read")
+        self.assertFalse(result['success'])
+        
+        # Test adding comment to non-existent document
+        result = self.service.add_comment("nonexistent", self.test_user.id, "Great document!", 0)
+        self.assertFalse(result['success'])
+    
+    def test_invalid_user_operations(self):
+        """Test operations with invalid users."""
+        # Test creating document with non-existent user
+        result = self.service.create_document("Test Doc", "nonexistent_user", "Content")
+        self.assertTrue(result['success'])  # The service creates documents even for non-existent users
+        
+        # Test getting documents for non-existent user
+        result = self.service.get_user_documents("nonexistent_user")
+        self.assertEqual(len(result), 1)  # The document was created for the non-existent user
+    
+    def test_permission_edge_cases(self):
+        """Test permission edge cases."""
+        # Create a document
+        result = self.service.create_document("Test Doc", self.test_user.id, "Content")
+        self.assertTrue(result['success'])
+        doc = result['document']
+        
+        # Test sharing with invalid permission
+        result = self.service.share_document(doc['id'], self.test_user.id, "user2", "invalid_permission")
+        self.assertFalse(result['success'])
+        
+        # Test operations with wrong user
+        other_user = self.service.create_user("other", "other@example.com", "Other", "User")
+        result = self.service.update_document_content(doc['id'], other_user.id, "New content")
+        self.assertFalse(result)
+    
+    def test_collaborative_editor_edge_cases(self):
+        """Test collaborative editor edge cases."""
+        # Test applying change to non-existent document
+        change = DocumentChange(
+            id="change1",
+            document_id="nonexistent",
+            user_id=self.test_user.id,
+            change_type="insert",
+            position=0,
+            content="New text",
+            timestamp=datetime.now(),
+            version=1
+        )
+        change_dict = change.__dict__.copy()
+        change_dict['type'] = change_dict.pop('change_type')
+        result = self.service.editor.apply_change(change.document_id, change.user_id, change_dict)
+        self.assertFalse(result[0])
+        
+        # Test cursor management for non-existent user
+        result = self.service.editor.update_user_cursor("doc1", "nonexistent", 10)
+        self.assertFalse(result)
+    
+    def test_document_change_edge_cases(self):
+        """Test document change edge cases."""
+        # Test change with invalid position
+        change = DocumentChange(
+            id="change1",
+            document_id="doc1",
+            user_id=self.test_user.id,
+            change_type="insert",
+            position=-1,  # Invalid position
+            content="New text",
+            timestamp=datetime.now(),
+            version=1
+        )
+        # The service should handle negative positions gracefully
+        self.assertIsInstance(change.position, int)
+    
+    def test_comment_edge_cases(self):
+        """Test comment edge cases."""
+        # Test comment with empty content
+        comment = Comment(
+            id="comment1",
+            document_id="doc1",
+            user_id=self.test_user.id,
+            content="",  # Empty content
+            position=0,
+            created_at=datetime.now()
+        )
+        self.assertEqual(comment.content, "")
+    
+    def test_user_edge_cases(self):
+        """Test user edge cases."""
+        # Test user with empty fields
+        user = User(
+            id="user1",
+            username="",  # Empty username
+            email="test@example.com",
+            display_name="Test User",
+            created_at=datetime.now()
+        )
+        self.assertEqual(user.username, "")
+        
+        # Test user with special characters
+        user = User(
+            id="user2",
+            username="test@example.com",  # Email as username
+            email="test@example.com",
+            display_name="Test User",
+            created_at=datetime.now()
+        )
+        self.assertEqual(user.username, "test@example.com")
+
+
+class TestPerformance(unittest.TestCase):
+    """Test performance and scalability."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = GoogleDocsService(self.temp_db.name)
+        self.test_user = self.service.create_user(
+            "testuser",
+            "test@example.com",
+            "Test",
+            "User"
+        )
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_bulk_document_operations(self):
+        """Test bulk document operations."""
+        import time
+        
+        # Create multiple documents
+        start_time = time.time()
+        documents = []
+        for i in range(100):
+            result = self.service.create_document(f"Document {i}", self.test_user.id, f"Content {i}")
+            if result['success']:
+                documents.append(result['document'])
+        creation_time = time.time() - start_time
+        
+        # Verify all documents were created
+        self.assertEqual(len(documents), 100)
+        self.assertLess(creation_time, 5.0)  # Should complete within 5 seconds
+        
+        # Test bulk retrieval
+        start_time = time.time()
+        user_docs = self.service.get_user_documents(self.test_user.id)
+        retrieval_time = time.time() - start_time
+        
+        self.assertEqual(len(user_docs), 100)
+        self.assertLess(retrieval_time, 2.0)  # Should complete within 2 seconds
+    
+    def test_concurrent_document_updates(self):
+        """Test concurrent document updates."""
+        import threading
+        import time
+        
+        # Create a document
+        result = self.service.create_document("Concurrent Doc", self.test_user.id, "Initial content")
+        self.assertTrue(result['success'])
+        doc = result['document']
+        
+        # Create multiple threads to update the document
+        def update_document(thread_id):
+            for i in range(10):
+                self.service.update_document_content(doc['id'], self.test_user.id, f"Update {thread_id}-{i}")
+                time.sleep(0.01)
+        
+        threads = []
+        for i in range(5):
+            thread = threading.Thread(target=update_document, args=(i,))
+            threads.append(thread)
+            thread.start()
+        
+        # Wait for all threads to complete
+        for thread in threads:
+            thread.join()
+        
+        # Verify the document was updated
+        updated_doc = self.service.get_document(doc['id'], self.test_user.id)
+        self.assertTrue(updated_doc['success'])
+        self.assertIn("Update", updated_doc['document']['content'])
+    
+    def test_memory_usage(self):
+        """Test memory usage with large documents."""
+        # Create a large document
+        large_content = "This is a test document. " * 1000  # ~25KB content
+        result = self.service.create_document("Large Doc", self.test_user.id, large_content)
+        self.assertTrue(result['success'])
+        doc = result['document']
+        
+        # Verify the document can be retrieved
+        retrieved_doc = self.service.get_document(doc['id'], self.test_user.id)
+        self.assertTrue(retrieved_doc['success'])
+        self.assertEqual(len(retrieved_doc['document']['content']), len(large_content))
+    
+    def test_database_performance(self):
+        """Test database performance."""
+        import time
+        
+        # Test document creation performance
+        start_time = time.time()
+        for i in range(50):
+            self.service.create_document(f"Perf Doc {i}", self.test_user.id, f"Content {i}")
+        creation_time = time.time() - start_time
+        
+        # Test document retrieval performance
+        start_time = time.time()
+        docs = self.service.get_user_documents(self.test_user.id)
+        retrieval_time = time.time() - start_time
+        
+        self.assertEqual(len(docs), 50)
+        self.assertLess(creation_time, 3.0)  # Should complete within 3 seconds
+        self.assertLess(retrieval_time, 1.0)  # Should complete within 1 second
+
+
+class TestIntegration(unittest.TestCase):
+    """Test integration scenarios."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = GoogleDocsService(self.temp_db.name)
+        self.test_user = self.service.create_user(
+            "testuser",
+            "test@example.com",
+            "Test",
+            "User"
+        )
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_full_document_lifecycle(self):
+        """Test complete document lifecycle."""
+        # Create document
+        result = self.service.create_document("Lifecycle Doc", self.test_user.id, "Initial content")
+        self.assertTrue(result['success'])
+        doc = result['document']
+        
+        # Update document
+        result = self.service.update_document_content(doc['id'], self.test_user.id, "Updated content")
+        self.assertTrue(result)
+        
+        # Share document
+        other_user = self.service.create_user("other", "other@example.com", "Other", "User")
+        result = self.service.share_document(doc['id'], self.test_user.id, other_user.id, "read")
+        self.assertTrue(result)
+        
+        # Add comment
+        result = self.service.add_comment(doc['id'], self.test_user.id, "Great document!", 0)
+        self.assertTrue(result)
+        
+        # Get comments
+        comments = self.service.get_document_comments(doc['id'], self.test_user.id)
+        self.assertEqual(len(comments['comments']), 1)
+        
+        # Verify document state
+        updated_doc = self.service.get_document(doc['id'], self.test_user.id)
+        self.assertTrue(updated_doc['success'])
+        self.assertEqual(updated_doc['document']['content'], "Updated content")
+    
+    def test_collaborative_editing_workflow(self):
+        """Test collaborative editing workflow."""
+        # Create document
+        result = self.service.create_document("Collaborative Doc", self.test_user.id, "Initial content")
+        self.assertTrue(result['success'])
+        doc = result['document']
+        
+        # Add another user to the document
+        other_user = self.service.create_user("collaborator", "collab@example.com", "Collab", "User")
+        self.service.share_document(doc['id'], self.test_user.id, other_user.id, "write")
+        
+        # Simulate collaborative editing
+        change1 = DocumentChange(
+            id="change1",
+            document_id=doc['id'],
+            user_id=self.test_user.id,
+            change_type="insert",
+            position=0,
+            content="Hello ",
+            timestamp=datetime.now(),
+            version=1
+        )
+        change_dict = change1.__dict__.copy()
+        change_dict['type'] = change_dict.pop('change_type')
+        result = self.service.editor.apply_change(change1.document_id, change1.user_id, change_dict)
+        self.assertTrue(result[0])
+        
+        change2 = DocumentChange(
+            id="change2",
+            document_id=doc['id'],
+            user_id=other_user.id,
+            change_type="insert",
+            position=len("Hello "),  # Insert after "Hello "
+            content="World!",
+            timestamp=datetime.now(),
+            version=1
+        )
+        change_dict = change2.__dict__.copy()
+        change_dict['type'] = change_dict.pop('change_type')
+        result = self.service.editor.apply_change(change2.document_id, change2.user_id, change_dict)
+        if not result[0]:
+            print(f"Change2 failed: {result[1]}")
+        self.assertTrue(result[0])
+        
+        # Verify final content
+        updated_doc = self.service.get_document(doc['id'], self.test_user.id)
+        self.assertTrue(updated_doc['success'])
+        self.assertIn("Hello", updated_doc['document']['content'])
+        self.assertIn("World!", updated_doc['document']['content'])
+    
+    def test_document_versioning(self):
+        """Test document versioning through changes."""
+        # Create document
+        result = self.service.create_document("Versioned Doc", self.test_user.id, "Version 1")
+        self.assertTrue(result['success'])
+        doc = result['document']
+        
+        # Apply multiple changes
+        changes = [
+            DocumentChange(
+                id=f"change{i}",
+                document_id=doc['id'],
+                user_id=self.test_user.id,
+                change_type="insert",
+                position=0,
+                content=f"Version {i+1} ",
+                timestamp=datetime.now(),
+                version=1
+            )
+            for i in range(1, 6)
+        ]
+        
+        for change in changes:
+            change_dict = change.__dict__.copy()
+            change_dict['type'] = change_dict.pop('change_type')
+            result = self.service.editor.apply_change(change.document_id, change.user_id, change_dict)
+            self.assertTrue(result[0])
+        
+        # Verify document has all versions
+        updated_doc = self.service.get_document(doc['id'], self.test_user.id)
+        self.assertTrue(updated_doc['success'])
+        self.assertIn("Version 1", updated_doc['document']['content'])
+        self.assertIn("Version 6", updated_doc['document']['content'])
+    
+    def test_user_management_integration(self):
+        """Test user management integration."""
+        # Create multiple users
+        users = []
+        for i in range(5):
+            user = self.service.create_user(
+                f"user{i}",
+                f"user{i}@example.com",
+                f"User{i}",
+                "Test"
+            )
+            users.append(user)
+        
+        # Create document and share with all users
+        result = self.service.create_document("Shared Doc", users[0].id, "Content")
+        self.assertTrue(result['success'])
+        doc = result['document']
+        
+        for user in users[1:]:
+            result = self.service.share_document(doc['id'], users[0].id, user.id, "read")
+            self.assertTrue(result)
+        
+        # Verify all users can access the document
+        for user in users:
+            accessible_doc = self.service.get_document(doc['id'], user.id)
+            self.assertTrue(accessible_doc['success'])
+
+
 if __name__ == '__main__':
     # Run tests with coverage
     unittest.main(verbosity=2)

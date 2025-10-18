@@ -1,0 +1,11 @@
+# Task ID: phase_5_task_5
+# Title: Create Makefile with common commands
+# Status: pending
+# Dependencies: None
+# Priority: medium
+# Description: 
+# Details:
+
+
+# Test Strategy:
+

@@ -1,0 +1,90 @@
+# TinyURL Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tinyurl-service
+  namespace: canary-blue-green
+  labels:
+    app: tinyurl-service
+    app.kubernetes.io/name: tinyurl-service
+    app.kubernetes.io/part-of: canary-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tinyurl-service
+  template:
+    metadata:
+      labels:
+        app: tinyurl-service
+        version: v1.0.0
+    spec:
+      containers:
+      - name: tinyurl-service
+        image: tinyurl-service:latest
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+        - name: FLASK_ENV
+          value: "production"
+        - name: DATABASE_PATH
+          value: "/data/tinyurl.db"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: tinyurl-data-pvc
+---
+# TinyURL Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: tinyurl-service
+  namespace: canary-blue-green
+  labels:
+    app: tinyurl-service
+    app.kubernetes.io/name: tinyurl-service
+    app.kubernetes.io/part-of: canary-deployment
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: tinyurl-service
+---
+# TinyURL Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tinyurl-data-pvc
+  namespace: canary-blue-green
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

@@ -614,6 +614,402 @@ class TestFlaskApp(unittest.TestCase):
         self.assertIn('timestamp', data)
         self.assertIn('online_users', data)
 
+class TestErrorHandling(unittest.TestCase):
+    """Test error handling and edge cases."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = MessagingService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_encryption_error_handling(self):
+        """Test encryption error handling."""
+        # Test with invalid key - this should raise an exception
+        with self.assertRaises(ValueError):
+            MessageEncryption("invalid_key")
+        
+        # Test with valid key
+        encryption = MessageEncryption()
+        encrypted = encryption.encrypt_message("test message")
+        self.assertIsNotNone(encrypted)
+        
+        # Test decryption with wrong key - should return the original string
+        decrypted = encryption.decrypt_message("invalid_encrypted_content")
+        self.assertEqual(decrypted, "invalid_encrypted_content")
+    
+    def test_database_error_handling_save_user(self):
+        """Test database error handling in save_user."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            user = User(
+                user_id="test_user",
+                username="testuser",
+                email="test@example.com"
+            )
+            
+            result = self.service.db.save_user(user)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_user(self):
+        """Test database error handling in get_user."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_user("test_user")
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_room(self):
+        """Test database error handling in save_room."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            room = Room(
+                room_id="test_room",
+                name="Test Room",
+                description="Test Description",
+                created_by="test_user"
+            )
+            
+            result = self.service.db.save_room(room)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_room(self):
+        """Test database error handling in get_room."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_room("test_room")
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_message(self):
+        """Test database error handling in save_message."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            message = Message(
+                message_id="test_message",
+                room_id="test_room",
+                sender_id="test_user",
+                content="Test message"
+            )
+            
+            result = self.service.db.save_message(message)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_messages(self):
+        """Test database error handling in get_messages."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_messages("test_room")
+            self.assertEqual(result, [])
+    
+    def test_database_error_handling_search_messages(self):
+        """Test database error handling in search_messages."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.search_messages("test_room", "test query")
+            self.assertEqual(result, [])
+    
+    def test_flask_error_handling(self):
+        """Test Flask error handling."""
+        app.config['TESTING'] = True
+        client = app.test_client()
+        
+        # Test invalid JSON
+        response = client.post('/api/users', 
+                             data="invalid json",
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        
+        # Test missing content type
+        response = client.post('/api/users', data="{}")
+        self.assertEqual(response.status_code, 415)
+
+class TestWebSocketEvents(unittest.TestCase):
+    """Test WebSocket event handlers."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = MessagingService(self.temp_db.name)
+        
+        # Create test user and room
+        self.test_user = self.service.create_user("testuser", "test@example.com")
+        self.test_room = self.service.create_room("Test Room", "Test Description", self.test_user.user_id)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_join_room_event(self):
+        """Test join_room WebSocket event."""
+        from messaging_service import socketio
+        
+        client = socketio.test_client(app)
+        # Test joining a room
+        client.emit('join_room', {
+            'room': self.test_room.room_id,
+            'user_id': self.test_user.user_id
+        })
+        
+        # Test the underlying functionality directly
+        self.service.set_user_online(self.test_user.user_id)
+        
+        # Check if user is online
+        user = self.service.get_user(self.test_user.user_id)
+        self.assertEqual(user.status, "online")
+        client.disconnect()
+    
+    def test_leave_room_event(self):
+        """Test leave_room WebSocket event."""
+        from messaging_service import socketio
+        
+        client = socketio.test_client(app)
+        # First join the room
+        client.emit('join_room', {
+            'room': self.test_room.room_id,
+            'user_id': self.test_user.user_id
+        })
+        
+        # Then leave the room
+        client.emit('leave_room', {
+            'room': self.test_room.room_id,
+            'user_id': self.test_user.user_id
+        })
+        
+        # Check if user is offline
+        user = self.service.get_user(self.test_user.user_id)
+        self.assertEqual(user.status, "offline")
+        client.disconnect()
+    
+    def test_send_message_event(self):
+        """Test send_message WebSocket event."""
+        from messaging_service import socketio
+        
+        client = socketio.test_client(app)
+        # Join room first
+        client.emit('join_room', {
+            'room': self.test_room.room_id,
+            'user_id': self.test_user.user_id
+        })
+        
+        # Test the underlying functionality directly
+        self.service.send_message(self.test_user.user_id, self.test_room.room_id, 'Test message')
+        
+        # Check if message was saved
+        messages = self.service.get_messages(self.test_room.room_id)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].content, 'Test message')
+        client.disconnect()
+    
+    def test_typing_event(self):
+        """Test typing WebSocket event."""
+        from messaging_service import socketio
+        
+        client = socketio.test_client(app)
+        # Join room first
+        client.emit('join_room', {
+            'room': self.test_room.room_id,
+            'user_id': self.test_user.user_id
+        })
+        
+        # Test the underlying functionality directly
+        self.service.set_typing(self.test_user.user_id, self.test_room.room_id, True)
+        
+        # Check if typing status was set
+        user = self.service.get_user(self.test_user.user_id)
+        self.assertTrue(user.is_typing)
+        self.assertEqual(user.typing_in, self.test_room.room_id)
+        client.disconnect()
+
+class TestEdgeCases(unittest.TestCase):
+    """Test edge cases and boundary conditions."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = MessagingService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_large_message_handling(self):
+        """Test handling of large messages."""
+        user = self.service.create_user("testuser", "test@example.com")
+        room = self.service.create_room("Test Room", "Test Description", user.user_id)
+        
+        # Create a large message
+        large_content = "x" * 10000  # 10KB message
+        message = self.service.send_message(user.user_id, room.room_id, large_content)
+        
+        self.assertIsNotNone(message)
+        self.assertEqual(message.content, large_content)
+    
+    def test_concurrent_messages(self):
+        """Test concurrent message handling."""
+        user = self.service.create_user("testuser", "test@example.com")
+        room = self.service.create_room("Test Room", "Test Description", user.user_id)
+        
+        # Send multiple messages concurrently
+        messages = []
+        for i in range(10):
+            message = self.service.send_message(user.user_id, room.room_id, f"Message {i}")
+            messages.append(message)
+        
+        # All messages should be created
+        self.assertEqual(len(messages), 10)
+        
+        # Check messages in database
+        db_messages = self.service.get_messages(room.room_id)
+        self.assertEqual(len(db_messages), 10)
+    
+    def test_room_member_limits(self):
+        """Test room member limits."""
+        room = self.service.create_room("Test Room", "Test Description", "user1")
+        
+        # Add many users to room
+        for i in range(100):
+            user = self.service.create_user(f"user{i}", f"user{i}@example.com")
+            self.service.add_user_to_room(room.room_id, user.user_id)
+        
+        # Check room members
+        room = self.service.db.get_room(room.room_id)
+        self.assertEqual(len(room.members), 101)  # 100 users + creator
+    
+    def test_message_search_edge_cases(self):
+        """Test message search edge cases."""
+        user = self.service.create_user("testuser", "test@example.com")
+        room = self.service.create_room("Test Room", "Test Description", user.user_id)
+        
+        # Send messages with special characters
+        special_messages = [
+            "Message with émojis 🚀",
+            "Message with numbers 12345",
+            "Message with symbols !@#$%",
+            "Message with spaces and   tabs",
+            "Message with newlines\nand\r\nreturns"
+        ]
+        
+        for content in special_messages:
+            self.service.send_message(user.user_id, room.room_id, content)
+        
+        # Search for each message
+        for content in special_messages:
+            results = self.service.search_messages(content[:10], user.user_id)
+            self.assertGreater(len(results), 0)
+
+class TestPerformance(unittest.TestCase):
+    """Test performance and scalability."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = MessagingService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_message_creation_performance(self):
+        """Test message creation performance."""
+        import time
+        
+        user = self.service.create_user("testuser", "test@example.com")
+        room = self.service.create_room("Test Room", "Test Description", user.user_id)
+        
+        start_time = time.time()
+        
+        # Create 1000 messages
+        for i in range(1000):
+            self.service.send_message(user.user_id, room.room_id, f"Message {i}")
+        
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        # Should complete in reasonable time (less than 5 seconds)
+        self.assertLess(duration, 5.0)
+        print(f"Created 1000 messages in {duration:.2f} seconds")
+    
+    def test_user_creation_performance(self):
+        """Test user creation performance."""
+        import time
+        
+        start_time = time.time()
+        
+        # Create 1000 users
+        for i in range(1000):
+            self.service.create_user(f"user{i}", f"user{i}@example.com")
+        
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        # Should complete in reasonable time (less than 3 seconds)
+        self.assertLess(duration, 3.0)
+        print(f"Created 1000 users in {duration:.2f} seconds")
+    
+    def test_memory_usage(self):
+        """Test memory usage with large datasets."""
+        import psutil
+        import os
+        
+        process = psutil.Process(os.getpid())
+        initial_memory = process.memory_info().rss / 1024 / 1024  # MB
+        
+        # Create large dataset
+        user = self.service.create_user("testuser", "test@example.com")
+        room = self.service.create_room("Test Room", "Test Description", user.user_id)
+        
+        # Create many messages
+        for i in range(1000):
+            self.service.send_message(user.user_id, room.room_id, f"Message {i}")
+        
+        final_memory = process.memory_info().rss / 1024 / 1024  # MB
+        memory_increase = final_memory - initial_memory
+        
+        # Memory increase should be reasonable (less than 50MB)
+        self.assertLess(memory_increase, 50.0)
+        print(f"Memory usage increased by {memory_increase:.2f}MB")
+
 if __name__ == '__main__':
     unittest.main()
 

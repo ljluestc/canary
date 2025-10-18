@@ -575,6 +575,12 @@ class MessagingService:
     
     def set_typing(self, user_id: str, room_id: str, is_typing: bool):
         """Set user typing status."""
+        user = self.get_user(user_id)
+        if user:
+            user.is_typing = is_typing
+            user.typing_in = room_id if is_typing else None
+            self.db.save_user(user)
+        
         if is_typing:
             self.typing_users[user_id] = TypingIndicator(
                 user_id=user_id,

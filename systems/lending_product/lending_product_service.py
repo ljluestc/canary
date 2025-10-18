@@ -372,6 +372,48 @@ class LendingProductDatabase:
             logger.error(f"Error getting customer: {e}")
             return None
     
+    def get_all_customers(self) -> List[Customer]:
+        """Get all customers."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                SELECT customer_id, first_name, last_name, email, phone, ssn,
+                       date_of_birth, address, city, state, zip_code, credit_score,
+                       annual_income, employment_status, is_active,
+                       created_at, updated_at
+                FROM customers
+                ORDER BY created_at DESC
+            ''')
+            
+            customers = []
+            for row in cursor.fetchall():
+                customer = Customer(
+                    customer_id=row[0],
+                    first_name=row[1],
+                    last_name=row[2],
+                    email=row[3],
+                    phone=row[4],
+                    ssn=row[5],
+                    date_of_birth=datetime.fromisoformat(row[6]) if row[6] else None,
+                    address=row[7],
+                    city=row[8],
+                    state=row[9],
+                    zip_code=row[10],
+                    credit_score=row[11] or 0,
+                    annual_income=row[12] or 0.0,
+                    employment_status=row[13] or "unemployed",
+                    is_active=bool(row[14])
+                )
+                customers.append(customer)
+            
+            conn.close()
+            return customers
+        except Exception as e:
+            logger.error(f"Error getting all customers: {e}")
+            return []
+    
     def save_loan_product(self, product: LoanProduct) -> bool:
         """Save loan product to database."""
         try:

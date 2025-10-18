@@ -1,0 +1,73 @@
+# Blue-Green Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: blue-green-active
+  namespace: canary-blue-green
+  labels:
+    app: blue-green-app
+    app.kubernetes.io/name: blue-green-app
+    app.kubernetes.io/part-of: canary-deployment
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: blue-green-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blue-green-preview
+  namespace: canary-blue-green
+  labels:
+    app: blue-green-app
+    app.kubernetes.io/name: blue-green-app
+    app.kubernetes.io/part-of: canary-deployment
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: blue-green-app
+---
+# Ingress for Blue-Green
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blue-green-ingress
+  namespace: canary-blue-green
+  labels:
+    app: blue-green-app
+    app.kubernetes.io/name: blue-green-app
+    app.kubernetes.io/part-of: canary-deployment
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: blue-green.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: blue-green-active
+            port:
+              number: 80
+  - host: blue-green-preview.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: blue-green-preview
+            port:
+              number: 80

@@ -1,0 +1,11 @@
+# Task ID: feature_task_50
+# Title: Automatic rollback on failure
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 
+# Details:
+
+
+# Test Strategy:
+

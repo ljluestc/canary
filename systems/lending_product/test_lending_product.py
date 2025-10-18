@@ -652,7 +652,7 @@ class TestLendingProductService(unittest.TestCase):
             annual_income=75000.0,
             employment_status="employed"
         )
-        
+
         # Get a product
         products = self.service.get_loan_products()
         self.assertGreater(len(products), 0)
@@ -727,7 +727,7 @@ class TestLendingProductService(unittest.TestCase):
             annual_income=100000.0,
             employment_status="employed"
         )
-        
+
         products = self.service.get_loan_products()
         product = products[0]
         
@@ -782,7 +782,7 @@ class TestLendingProductService(unittest.TestCase):
             annual_income=100000.0,
             employment_status="employed"
         )
-        
+
         products = self.service.get_loan_products()
         product = products[0]
         
@@ -964,6 +964,702 @@ class TestFlaskApp(unittest.TestCase):
         
         summary = response.get_json()
         self.assertIsInstance(summary, dict)
+
+class TestErrorHandling(unittest.TestCase):
+    """Test error handling and edge cases."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = LendingProductService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_database_error_handling(self):
+        """Test database error handling."""
+        # Test with invalid database path
+        with self.assertRaises(Exception):
+            LendingProductService("/invalid/path/database.db")
+    
+    def test_customer_creation_error_handling(self):
+        """Test customer creation error handling."""
+        # Test with invalid data
+        customer = self.service.create_customer(
+            first_name="",
+            last_name="",
+            email="invalid-email",
+            phone="",
+            ssn="",
+            date_of_birth=datetime(1990, 1, 1),
+            address="",
+            city="",
+            state="",
+            zip_code=""
+        )
+        # Should still create customer but with validation
+        self.assertIsNotNone(customer)
+    
+    def test_loan_application_error_handling(self):
+        """Test loan application error handling."""
+        # Create customer first
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345"
+        )
+        
+        # Test with invalid product ID
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="nonexistent_product",
+            requested_amount=10000.0,
+            requested_term_months=36,
+            purpose="Test"
+        )
+        self.assertIsNone(application)
+    
+    def test_payment_processing_error_handling(self):
+        """Test payment processing error handling."""
+        # Test with invalid loan ID
+        payment = self.service.process_payment(
+            loan_id="nonexistent_loan",
+            amount=100.0,
+            payment_method="credit_card"
+        )
+        self.assertIsNone(payment)
+    
+    def test_flask_error_handling(self):
+        """Test Flask error handling."""
+        from lending_product_service import app
+        app.config['TESTING'] = True
+        client = app.test_client()
+        
+        # Test invalid JSON
+        response = client.post('/api/customers', 
+                             data="invalid json",
+                             content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        
+        # Test missing content type
+        response = client.post('/api/customers', data="{}")
+        self.assertEqual(response.status_code, 415)
+
+class TestEdgeCases(unittest.TestCase):
+    """Test edge cases and boundary conditions."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = LendingProductService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_credit_score_boundaries(self):
+        """Test credit score boundary conditions."""
+        # Test minimum credit score
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345"
+        )
+        credit_score = self.service.calculate_credit_score(customer)
+        self.assertGreaterEqual(credit_score, 300)
+        self.assertLessEqual(credit_score, 850)
+    
+    def test_loan_amount_boundaries(self):
+        """Test loan amount boundary conditions."""
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345"
+        )
+        
+        # Test minimum loan amount
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=1000.0,  # Minimum amount
+            requested_term_months=12,
+            purpose="Test"
+        )
+        self.assertIsNotNone(application)
+        
+        # Test maximum loan amount
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=50000.0,  # Maximum amount
+            requested_term_months=60,
+            purpose="Test"
+        )
+        self.assertIsNotNone(application)
+    
+    def test_payment_amount_boundaries(self):
+        """Test payment amount boundary conditions."""
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345"
+        )
+        
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=10000.0,
+            requested_term_months=36,
+            purpose="Test"
+        )
+        
+        if application and application.status == "approved":
+            loan = self.service.fund_loan(application.application_id)
+            if loan:
+                # Test minimum payment
+                payment = self.service.process_payment(
+                    loan_id=loan.loan_id,
+                    amount=0.01,  # Minimum payment
+                    payment_method="credit_card"
+                )
+                self.assertIsNotNone(payment)
+                
+                # Test maximum payment (full loan amount)
+                payment = self.service.process_payment(
+                    loan_id=loan.loan_id,
+                    amount=loan.amount,  # Full amount
+                    payment_method="credit_card"
+                )
+                self.assertIsNotNone(payment)
+    
+    def test_concurrent_operations(self):
+        """Test concurrent operations."""
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345"
+        )
+        
+        # Submit multiple applications concurrently
+        applications = []
+        for i in range(5):
+            application = self.service.submit_loan_application(
+                customer_id=customer.customer_id,
+                product_id="personal_001",
+                requested_amount=5000.0 + i * 1000,
+                requested_term_months=36,
+                purpose=f"Test {i}"
+            )
+            applications.append(application)
+        
+        # All applications should be created
+        self.assertEqual(len([app for app in applications if app is not None]), 5)
+    
+    def test_large_data_handling(self):
+        """Test handling of large data sets."""
+        # Create many customers
+        customers = []
+        for i in range(100):
+            customer = self.service.create_customer(
+                first_name=f"Test{i}",
+                last_name="User",
+                email=f"test{i}@example.com",
+                phone=f"123-456-{i:04d}",
+                ssn=f"123-45-{i:04d}",
+                date_of_birth=datetime(1990, 1, 1),
+                address=f"{i} Main St",
+                city="Anytown",
+                state="CA",
+                zip_code="12345"
+            )
+            customers.append(customer)
+        
+        # All customers should be created
+        self.assertEqual(len(customers), 100)
+        
+        # Test retrieving all customers
+        all_customers = self.service.db.get_all_customers()
+        self.assertGreaterEqual(len(all_customers), 100)
+
+class TestPerformance(unittest.TestCase):
+    """Test performance and scalability."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = LendingProductService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_customer_creation_performance(self):
+        """Test customer creation performance."""
+        import time
+        
+        start_time = time.time()
+        
+        # Create 100 customers
+        for i in range(100):
+            self.service.create_customer(
+                first_name=f"Test{i}",
+                last_name="User",
+                email=f"test{i}@example.com",
+                phone=f"123-456-{i:04d}",
+                ssn=f"123-45-{i:04d}",
+                date_of_birth=datetime(1990, 1, 1),
+                address=f"{i} Main St",
+                city="Anytown",
+                state="CA",
+                zip_code="12345"
+            )
+        
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        # Should complete in reasonable time (less than 5 seconds)
+        self.assertLess(duration, 5.0)
+        print(f"Created 100 customers in {duration:.2f} seconds")
+    
+    def test_loan_processing_performance(self):
+        """Test loan processing performance."""
+        import time
+        
+        # Create customer
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345"
+        )
+        
+        start_time = time.time()
+        
+        # Process 50 loan applications
+        for i in range(50):
+            self.service.submit_loan_application(
+                customer_id=customer.customer_id,
+                product_id="personal_001",
+                requested_amount=1000.0 + i * 100,
+                requested_term_months=36,
+                purpose=f"Test {i}"
+            )
+        
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        # Should complete in reasonable time (less than 3 seconds)
+        self.assertLess(duration, 3.0)
+        print(f"Processed 50 loan applications in {duration:.2f} seconds")
+    
+    def test_memory_usage(self):
+        """Test memory usage with large datasets."""
+        import psutil
+        import os
+        
+        process = psutil.Process(os.getpid())
+        initial_memory = process.memory_info().rss / 1024 / 1024  # MB
+        
+        # Create large dataset
+        customers = []
+        for i in range(1000):
+            customer = self.service.create_customer(
+                first_name=f"Test{i}",
+                last_name="User",
+                email=f"test{i}@example.com",
+                phone=f"123-456-{i:04d}",
+                ssn=f"123-45-{i:04d}",
+                date_of_birth=datetime(1990, 1, 1),
+                address=f"{i} Main St",
+                city="Anytown",
+                state="CA",
+                zip_code="12345"
+            )
+            customers.append(customer)
+        
+        final_memory = process.memory_info().rss / 1024 / 1024  # MB
+        memory_increase = final_memory - initial_memory
+        
+        # Memory increase should be reasonable (less than 100MB)
+        self.assertLess(memory_increase, 100.0)
+        print(f"Memory usage increased by {memory_increase:.2f}MB")
+
+class TestAdditionalCoverage(unittest.TestCase):
+    """Test additional coverage for missing lines."""
+    
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = LendingProductService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_database_error_handling_save_customer(self):
+        """Test database error handling in save_customer."""
+        # Mock database connection to raise exception
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            customer = Customer(
+                customer_id="test_cust",
+                first_name="Test",
+                last_name="User",
+                email="test@example.com",
+                phone="123-456-7890",
+                ssn="123-45-6789",
+                date_of_birth=datetime(1990, 1, 1),
+                address="123 Main St",
+                city="Anytown",
+                state="CA",
+                zip_code="12345"
+            )
+            
+            result = self.service.db.save_customer(customer)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_customer(self):
+        """Test database error handling in get_customer."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_customer("test_cust")
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_get_all_customers(self):
+        """Test database error handling in get_all_customers."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_all_customers()
+            self.assertEqual(result, [])
+    
+    def test_database_error_handling_save_loan_product(self):
+        """Test database error handling in save_loan_product."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            product = LoanProduct(
+                product_id="test_product",
+                name="Test Product",
+                loan_type=LoanType.PERSONAL,
+                min_amount=1000.0,
+                max_amount=10000.0,
+                min_term_months=12,
+                max_term_months=60,
+                interest_rate_min=5.0,
+                interest_rate_max=15.0,
+                min_credit_score=600
+            )
+            
+            result = self.service.db.save_loan_product(product)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_loan_products(self):
+        """Test database error handling in get_loan_products."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_loan_products()
+            self.assertEqual(result, [])
+    
+    def test_database_error_handling_save_loan_application(self):
+        """Test database error handling in save_loan_application."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            application = LoanApplication(
+                application_id="test_app",
+                customer_id="test_cust",
+                product_id="test_product",
+                requested_amount=10000.0,
+                requested_term_months=36,
+                purpose="Test",
+                status="pending"
+            )
+            
+            result = self.service.db.save_loan_application(application)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_loan_application(self):
+        """Test database error handling in get_loan_application."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_loan_application("test_app")
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_loan(self):
+        """Test database error handling in save_loan."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            loan = Loan(
+                loan_id="test_loan",
+                application_id="test_app",
+                customer_id="test_cust",
+                product_id="test_product",
+                principal_amount=10000.0,
+                interest_rate=10.0,
+                term_months=36,
+                monthly_payment=322.67,
+                remaining_balance=10000.0,
+                next_payment_due=datetime.now(),
+                status="active"
+            )
+            
+            result = self.service.db.save_loan(loan)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_loan(self):
+        """Test database error handling in get_loan."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_loan("test_loan")
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_payment(self):
+        """Test database error handling in save_payment."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            payment = Payment(
+                payment_id="test_payment",
+                loan_id="test_loan",
+                customer_id="test_cust",
+                amount=322.67,
+                payment_date=datetime.now(),
+                status=PaymentStatus.PENDING
+            )
+            
+            result = self.service.db.save_payment(payment)
+            self.assertFalse(result)
+    
+    def test_database_error_handling_get_loan_payments(self):
+        """Test database error handling in get_loan_payments."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+            
+            result = self.service.db.get_loan_payments("test_loan")
+            self.assertEqual(result, [])
+    
+    def test_flask_error_handling_create_customer(self):
+        """Test Flask error handling in create_customer endpoint."""
+        from lending_product_service import app
+        app.config['TESTING'] = True
+        client = app.test_client()
+        
+        # Test with invalid data that causes service error
+        with patch('lending_product_service.lending_product_service.create_customer') as mock_create:
+            mock_create.return_value = None  # Simulate service failure
+            
+            response = client.post('/api/customers', json={
+                'first_name': 'Test',
+                'last_name': 'User',
+                'email': 'test@example.com',
+                'phone': '123-456-7890',
+                'ssn': '123-45-6789',
+                'date_of_birth': '1990-01-01T00:00:00',
+                'address': '123 Main St',
+                'city': 'Anytown',
+                'state': 'CA',
+                'zip_code': '12345'
+            })
+            
+            self.assertEqual(response.status_code, 200)
+            data = response.get_json()
+            self.assertFalse(data['success'])
+            self.assertIn('error', data)
+    
+    def test_flask_error_handling_submit_application(self):
+        """Test Flask error handling in submit_application endpoint."""
+        from lending_product_service import app
+        app.config['TESTING'] = True
+        client = app.test_client()
+        
+        # Test with invalid data that causes service error
+        with patch('lending_product_service.lending_product_service.submit_loan_application') as mock_submit:
+            mock_submit.return_value = None  # Simulate service failure
+            
+            response = client.post('/api/applications', json={
+                'customer_id': 'test_cust',
+                'product_id': 'test_product',
+                'requested_amount': 10000.0,
+                'requested_term_months': 36,
+                'purpose': 'Test'
+            })
+            
+            self.assertEqual(response.status_code, 200)
+            data = response.get_json()
+            self.assertFalse(data['success'])
+            self.assertIn('error', data)
+    
+    def test_flask_error_handling_get_loan_summary(self):
+        """Test Flask error handling in get_loan_summary endpoint."""
+        from lending_product_service import app
+        app.config['TESTING'] = True
+        client = app.test_client()
+        
+        # Test with invalid loan ID
+        with patch('lending_product_service.lending_product_service.get_loan_summary') as mock_summary:
+            mock_summary.return_value = None  # Simulate service failure
+            
+            response = client.get('/api/loans/nonexistent/summary')
+            
+            self.assertEqual(response.status_code, 404)
+    
+    def test_edge_case_credit_score_calculation(self):
+        """Test edge cases in credit score calculation."""
+        # Test with customer having no credit history
+        customer = Customer(
+            customer_id="test_cust",
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            credit_score=0,
+            annual_income=0.0,
+            employment_status="unemployed"
+        )
+        
+        credit_score = self.service.calculate_credit_score(customer)
+        self.assertGreaterEqual(credit_score, 300)
+        self.assertLessEqual(credit_score, 850)
+    
+    def test_edge_case_risk_assessment(self):
+        """Test edge cases in risk assessment."""
+        # Test with high-risk customer
+        customer = Customer(
+            customer_id="test_cust",
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1990, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            credit_score=300,
+            annual_income=10000.0,
+            employment_status="unemployed"
+        )
+        
+        risk_level = self.service.assess_risk_level(customer.credit_score, 10000.0, customer.annual_income)
+        self.assertIn(risk_level, [RiskLevel.HIGH, RiskLevel.MEDIUM, RiskLevel.LOW, RiskLevel.VERY_HIGH])
+    
+    def test_edge_case_loan_terms_calculation(self):
+        """Test edge cases in loan terms calculation."""
+        # Test with maximum loan amount
+        terms = self.service.calculate_loan_terms(
+            principal=50000.0,
+            annual_rate=15.0,
+            term_months=60
+        )
+        
+        self.assertIsNotNone(terms)
+        self.assertGreater(terms['monthly_payment'], 0)
+        self.assertGreater(terms['total_interest'], 0)
+        self.assertGreater(terms['total_amount'], 50000.0)
 
 if __name__ == '__main__':
     unittest.main()

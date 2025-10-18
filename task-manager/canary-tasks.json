@@ -1,0 +1,1978 @@
+{
+  "metadata": {
+    "title": "PRD: Canary Deployment Guide",
+    "sections": [
+      "## 1. Executive Summary",
+      "## 2. Canary Deployment Strategy",
+      "## 3. Implementation Guide",
+      "## 4. Deployment Workflow",
+      "## 5. Analysis Configuration",
+      "## 6. Operational Commands",
+      "## 7. Implementation Phases",
+      "## 8. Best Practices",
+      "## 9. Troubleshooting",
+      "## 10. Advanced Topics",
+      "## 11. Metrics and Monitoring",
+      "## 12. References",
+      "## 13. Appendix"
+    ],
+    "total_tasks": 90,
+    "total_phases": 12
+  },
+  "phases": [
+    {
+      "name": "Preparation",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_1_task_1",
+          "title": "Review application metrics available",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 311
+        },
+        {
+          "id": "phase_1_task_2",
+          "title": "Identify key metrics for analysis (error rate, latency, etc.)",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 312
+        },
+        {
+          "id": "phase_1_task_3",
+          "title": "Determine appropriate traffic split percentages",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 313
+        },
+        {
+          "id": "phase_1_task_4",
+          "title": "Calculate pause durations for analysis",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 314
+        },
+        {
+          "id": "phase_1_task_5",
+          "title": "Assess Prometheus metric collection",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 315
+        },
+        {
+          "id": "phase_1_task_6",
+          "title": "Plan canary rollout steps",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 316
+        }
+      ]
+    },
+    {
+      "name": "Manifest Creation",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_2_task_1",
+          "title": "Create rollout manifest with canary strategy",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 319
+        },
+        {
+          "id": "phase_2_task_2",
+          "title": "Define stable and canary services",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 320
+        },
+        {
+          "id": "phase_2_task_3",
+          "title": "Configure traffic routing (nginx/istio)",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 321
+        },
+        {
+          "id": "phase_2_task_4",
+          "title": "Create AnalysisTemplate with Prometheus queries",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 322
+        },
+        {
+          "id": "phase_2_task_5",
+          "title": "Set up success criteria for each metric",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 323
+        },
+        {
+          "id": "phase_2_task_6",
+          "title": "Configure rollout steps with weights and pauses",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 324
+        },
+        {
+          "id": "phase_2_task_7",
+          "title": "Set maxSurge and maxUnavailable parameters",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 325
+        },
+        {
+          "id": "phase_2_task_8",
+          "title": "Configure ingress for traffic management",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 326
+        }
+      ]
+    },
+    {
+      "name": "Prometheus Setup",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_3_task_1",
+          "title": "Verify Prometheus is installed and running",
+          "phase": "Prometheus Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 329
+        },
+        {
+          "id": "phase_3_task_2",
+          "title": "Configure application to export metrics",
+          "phase": "Prometheus Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 330
+        },
+        {
+          "id": "phase_3_task_3",
+          "title": "Set up ServiceMonitor for metric scraping",
+          "phase": "Prometheus Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 331
+        },
+        {
+          "id": "phase_3_task_4",
+          "title": "Test Prometheus queries return data",
+          "phase": "Prometheus Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 332
+        },
+        {
+          "id": "phase_3_task_5",
+          "title": "Verify metric labels match AnalysisTemplate",
+          "phase": "Prometheus Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 333
+        },
+        {
+          "id": "phase_3_task_6",
+          "title": "Set up Grafana dashboards for visualization",
+          "phase": "Prometheus Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 334
+        },
+        {
+          "id": "phase_3_task_7",
+          "title": "Configure alerting rules",
+          "phase": "Prometheus Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 335
+        }
+      ]
+    },
+    {
+      "name": "Initial Deployment",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_4_task_1",
+          "title": "Create namespace if not exists",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 338
+        },
+        {
+          "id": "phase_4_task_2",
+          "title": "Deploy AnalysisTemplate",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 339
+        },
+        {
+          "id": "phase_4_task_3",
+          "title": "Deploy rollout manifest",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 340
+        },
+        {
+          "id": "phase_4_task_4",
+          "title": "Deploy services (stable and canary)",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 341
+        },
+        {
+          "id": "phase_4_task_5",
+          "title": "Deploy ingress configuration",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 342
+        },
+        {
+          "id": "phase_4_task_6",
+          "title": "Wait for initial pods to be ready",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 343
+        },
+        {
+          "id": "phase_4_task_7",
+          "title": "Verify stable service has endpoints",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 344
+        },
+        {
+          "id": "phase_4_task_8",
+          "title": "Test application via ingress",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 345
+        },
+        {
+          "id": "phase_4_task_9",
+          "title": "Verify metrics are being collected",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 346
+        }
+      ]
+    },
+    {
+      "name": "First Canary Rollout",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_5_task_1",
+          "title": "Update container image to new version",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 349
+        },
+        {
+          "id": "phase_5_task_2",
+          "title": "Commit and push to Git repository",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 350
+        },
+        {
+          "id": "phase_5_task_3",
+          "title": "Wait for ArgoCD to sync",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 351
+        },
+        {
+          "id": "phase_5_task_4",
+          "title": "Monitor rollout status",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 352
+        },
+        {
+          "id": "phase_5_task_5",
+          "title": "Verify canary pods created",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 353
+        },
+        {
+          "id": "phase_5_task_6",
+          "title": "Check traffic split at 10%",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 354
+        },
+        {
+          "id": "phase_5_task_7",
+          "title": "Wait for analysis to run",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 355
+        },
+        {
+          "id": "phase_5_task_8",
+          "title": "Review analysis results",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 356
+        },
+        {
+          "id": "phase_5_task_9",
+          "title": "Verify automatic progression to 25%",
+          "phase": "First Canary Rollout",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 357
+        }
+      ]
+    },
+    {
+      "name": "Analysis Validation",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_6_task_1",
+          "title": "Access canary endpoint to generate traffic",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 360
+        },
+        {
+          "id": "phase_6_task_2",
+          "title": "Run load tests against application",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 361
+        },
+        {
+          "id": "phase_6_task_3",
+          "title": "Monitor Prometheus metrics in real-time",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 362
+        },
+        {
+          "id": "phase_6_task_4",
+          "title": "Verify AnalysisRun is created",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 363
+        },
+        {
+          "id": "phase_6_task_5",
+          "title": "Check analysis success/failure status",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 364
+        },
+        {
+          "id": "phase_6_task_6",
+          "title": "Review metric thresholds",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 365
+        },
+        {
+          "id": "phase_6_task_7",
+          "title": "Validate automatic progression works",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 366
+        },
+        {
+          "id": "phase_6_task_8",
+          "title": "Test automatic rollback on failure",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 367
+        },
+        {
+          "id": "phase_6_task_9",
+          "title": "Verify rollback completes successfully",
+          "phase": "Analysis Validation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 368
+        }
+      ]
+    },
+    {
+      "name": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_7_task_1",
+          "title": "Monitor traffic at each weight (10%, 25%, 50%, 75%)",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 371
+        },
+        {
+          "id": "phase_7_task_2",
+          "title": "Watch for error rate increases",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 372
+        },
+        {
+          "id": "phase_7_task_3",
+          "title": "Track latency metrics",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 373
+        },
+        {
+          "id": "phase_7_task_4",
+          "title": "Monitor resource utilization",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 374
+        },
+        {
+          "id": "phase_7_task_5",
+          "title": "Check application logs for errors",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 375
+        },
+        {
+          "id": "phase_7_task_6",
+          "title": "Verify database performance",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 376
+        },
+        {
+          "id": "phase_7_task_7",
+          "title": "Monitor external API calls",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 377
+        },
+        {
+          "id": "phase_7_task_8",
+          "title": "Check cache hit rates",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 378
+        },
+        {
+          "id": "phase_7_task_9",
+          "title": "Review custom business metrics",
+          "phase": "Progressive Rollout Monitoring",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 379
+        }
+      ]
+    },
+    {
+      "name": "Full Promotion",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_8_task_1",
+          "title": "Wait for 100% traffic to canary",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 382
+        },
+        {
+          "id": "phase_8_task_2",
+          "title": "Verify all traffic switched",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 383
+        },
+        {
+          "id": "phase_8_task_3",
+          "title": "Run production smoke tests",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 384
+        },
+        {
+          "id": "phase_8_task_4",
+          "title": "Execute full integration test suite",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 385
+        },
+        {
+          "id": "phase_8_task_5",
+          "title": "Monitor production metrics",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 386
+        },
+        {
+          "id": "phase_8_task_6",
+          "title": "Check error rates remain low",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 387
+        },
+        {
+          "id": "phase_8_task_7",
+          "title": "Verify latency is acceptable",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 388
+        },
+        {
+          "id": "phase_8_task_8",
+          "title": "Confirm stable version scaled down",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 389
+        },
+        {
+          "id": "phase_8_task_9",
+          "title": "Clean up old ReplicaSets",
+          "phase": "Full Promotion",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 390
+        }
+      ]
+    },
+    {
+      "name": "Rollback Testing",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_9_task_1",
+          "title": "Trigger analysis failure intentionally",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 393
+        },
+        {
+          "id": "phase_9_task_2",
+          "title": "Verify automatic rollback occurs",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 394
+        },
+        {
+          "id": "phase_9_task_3",
+          "title": "Check traffic reverts to stable version",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 395
+        },
+        {
+          "id": "phase_9_task_4",
+          "title": "Measure rollback duration",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 396
+        },
+        {
+          "id": "phase_9_task_5",
+          "title": "Verify application remains available",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 397
+        },
+        {
+          "id": "phase_9_task_6",
+          "title": "Test manual abort command",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 398
+        },
+        {
+          "id": "phase_9_task_7",
+          "title": "Practice emergency rollback procedure",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 399
+        },
+        {
+          "id": "phase_9_task_8",
+          "title": "Document rollback steps in runbook",
+          "phase": "Rollback Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 400
+        }
+      ]
+    },
+    {
+      "name": "Optimization",
+      "priority": "medium",
+      "tasks": [
+        {
+          "id": "phase_10_task_1",
+          "title": "Fine-tune traffic split percentages",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 403
+        },
+        {
+          "id": "phase_10_task_2",
+          "title": "Adjust pause durations",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 404
+        },
+        {
+          "id": "phase_10_task_3",
+          "title": "Optimize analysis query intervals",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 405
+        },
+        {
+          "id": "phase_10_task_4",
+          "title": "Add additional metrics to analysis",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 406
+        },
+        {
+          "id": "phase_10_task_5",
+          "title": "Configure multiple analysis templates",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 407
+        },
+        {
+          "id": "phase_10_task_6",
+          "title": "Implement baseline vs canary comparison",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 408
+        },
+        {
+          "id": "phase_10_task_7",
+          "title": "Set up automated notifications",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 409
+        },
+        {
+          "id": "phase_10_task_8",
+          "title": "Create custom dashboards",
+          "phase": "Optimization",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 410
+        }
+      ]
+    },
+    {
+      "name": "Advanced Configuration",
+      "priority": "low",
+      "tasks": [
+        {
+          "id": "phase_11_task_1",
+          "title": "Implement experiment-based canary (A/B testing)",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 413
+        },
+        {
+          "id": "phase_11_task_2",
+          "title": "Configure header-based routing",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 414
+        },
+        {
+          "id": "phase_11_task_3",
+          "title": "Set up canary with Istio service mesh",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 415
+        },
+        {
+          "id": "phase_11_task_4",
+          "title": "Implement traffic mirroring/shadowing",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 416
+        },
+        {
+          "id": "phase_11_task_5",
+          "title": "Configure ALB for AWS environments",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 417
+        },
+        {
+          "id": "phase_11_task_6",
+          "title": "Set up multi-stage canary (dev\u2192staging\u2192prod)",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 418
+        },
+        {
+          "id": "phase_11_task_7",
+          "title": "Implement automated approval gates",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 419
+        },
+        {
+          "id": "phase_11_task_8",
+          "title": "Create deployment templates",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 420
+        }
+      ]
+    },
+    {
+      "name": "Advanced Configuration",
+      "priority": "low",
+      "tasks": [
+        {
+          "id": "phase_11_task_1",
+          "title": "Implement experiment-based canary (A/B testing)",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 413
+        },
+        {
+          "id": "phase_11_task_2",
+          "title": "Configure header-based routing",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 414
+        },
+        {
+          "id": "phase_11_task_3",
+          "title": "Set up canary with Istio service mesh",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 415
+        },
+        {
+          "id": "phase_11_task_4",
+          "title": "Implement traffic mirroring/shadowing",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 416
+        },
+        {
+          "id": "phase_11_task_5",
+          "title": "Configure ALB for AWS environments",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 417
+        },
+        {
+          "id": "phase_11_task_6",
+          "title": "Set up multi-stage canary (dev\u2192staging\u2192prod)",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 418
+        },
+        {
+          "id": "phase_11_task_7",
+          "title": "Implement automated approval gates",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 419
+        },
+        {
+          "id": "phase_11_task_8",
+          "title": "Create deployment templates",
+          "phase": "Advanced Configuration",
+          "priority": "low",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 11",
+          "line_number": 420
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "phase_1_task_1",
+      "title": "Review application metrics available",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 311
+    },
+    {
+      "id": "phase_1_task_2",
+      "title": "Identify key metrics for analysis (error rate, latency, etc.)",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 312
+    },
+    {
+      "id": "phase_1_task_3",
+      "title": "Determine appropriate traffic split percentages",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 313
+    },
+    {
+      "id": "phase_1_task_4",
+      "title": "Calculate pause durations for analysis",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 314
+    },
+    {
+      "id": "phase_1_task_5",
+      "title": "Assess Prometheus metric collection",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 315
+    },
+    {
+      "id": "phase_1_task_6",
+      "title": "Plan canary rollout steps",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 316
+    },
+    {
+      "id": "phase_2_task_1",
+      "title": "Create rollout manifest with canary strategy",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 319
+    },
+    {
+      "id": "phase_2_task_2",
+      "title": "Define stable and canary services",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 320
+    },
+    {
+      "id": "phase_2_task_3",
+      "title": "Configure traffic routing (nginx/istio)",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 321
+    },
+    {
+      "id": "phase_2_task_4",
+      "title": "Create AnalysisTemplate with Prometheus queries",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 322
+    },
+    {
+      "id": "phase_2_task_5",
+      "title": "Set up success criteria for each metric",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 323
+    },
+    {
+      "id": "phase_2_task_6",
+      "title": "Configure rollout steps with weights and pauses",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 324
+    },
+    {
+      "id": "phase_2_task_7",
+      "title": "Set maxSurge and maxUnavailable parameters",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 325
+    },
+    {
+      "id": "phase_2_task_8",
+      "title": "Configure ingress for traffic management",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 326
+    },
+    {
+      "id": "phase_3_task_1",
+      "title": "Verify Prometheus is installed and running",
+      "phase": "Prometheus Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 329
+    },
+    {
+      "id": "phase_3_task_2",
+      "title": "Configure application to export metrics",
+      "phase": "Prometheus Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 330
+    },
+    {
+      "id": "phase_3_task_3",
+      "title": "Set up ServiceMonitor for metric scraping",
+      "phase": "Prometheus Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 331
+    },
+    {
+      "id": "phase_3_task_4",
+      "title": "Test Prometheus queries return data",
+      "phase": "Prometheus Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 332
+    },
+    {
+      "id": "phase_3_task_5",
+      "title": "Verify metric labels match AnalysisTemplate",
+      "phase": "Prometheus Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 333
+    },
+    {
+      "id": "phase_3_task_6",
+      "title": "Set up Grafana dashboards for visualization",
+      "phase": "Prometheus Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 334
+    },
+    {
+      "id": "phase_3_task_7",
+      "title": "Configure alerting rules",
+      "phase": "Prometheus Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 335
+    },
+    {
+      "id": "phase_4_task_1",
+      "title": "Create namespace if not exists",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 338
+    },
+    {
+      "id": "phase_4_task_2",
+      "title": "Deploy AnalysisTemplate",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 339
+    },
+    {
+      "id": "phase_4_task_3",
+      "title": "Deploy rollout manifest",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 340
+    },
+    {
+      "id": "phase_4_task_4",
+      "title": "Deploy services (stable and canary)",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 341
+    },
+    {
+      "id": "phase_4_task_5",
+      "title": "Deploy ingress configuration",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 342
+    },
+    {
+      "id": "phase_4_task_6",
+      "title": "Wait for initial pods to be ready",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 343
+    },
+    {
+      "id": "phase_4_task_7",
+      "title": "Verify stable service has endpoints",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 344
+    },
+    {
+      "id": "phase_4_task_8",
+      "title": "Test application via ingress",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 345
+    },
+    {
+      "id": "phase_4_task_9",
+      "title": "Verify metrics are being collected",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 346
+    },
+    {
+      "id": "phase_5_task_1",
+      "title": "Update container image to new version",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 349
+    },
+    {
+      "id": "phase_5_task_2",
+      "title": "Commit and push to Git repository",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 350
+    },
+    {
+      "id": "phase_5_task_3",
+      "title": "Wait for ArgoCD to sync",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 351
+    },
+    {
+      "id": "phase_5_task_4",
+      "title": "Monitor rollout status",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 352
+    },
+    {
+      "id": "phase_5_task_5",
+      "title": "Verify canary pods created",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 353
+    },
+    {
+      "id": "phase_5_task_6",
+      "title": "Check traffic split at 10%",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 354
+    },
+    {
+      "id": "phase_5_task_7",
+      "title": "Wait for analysis to run",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 355
+    },
+    {
+      "id": "phase_5_task_8",
+      "title": "Review analysis results",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 356
+    },
+    {
+      "id": "phase_5_task_9",
+      "title": "Verify automatic progression to 25%",
+      "phase": "First Canary Rollout",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 357
+    },
+    {
+      "id": "phase_6_task_1",
+      "title": "Access canary endpoint to generate traffic",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 360
+    },
+    {
+      "id": "phase_6_task_2",
+      "title": "Run load tests against application",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 361
+    },
+    {
+      "id": "phase_6_task_3",
+      "title": "Monitor Prometheus metrics in real-time",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 362
+    },
+    {
+      "id": "phase_6_task_4",
+      "title": "Verify AnalysisRun is created",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 363
+    },
+    {
+      "id": "phase_6_task_5",
+      "title": "Check analysis success/failure status",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 364
+    },
+    {
+      "id": "phase_6_task_6",
+      "title": "Review metric thresholds",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 365
+    },
+    {
+      "id": "phase_6_task_7",
+      "title": "Validate automatic progression works",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 366
+    },
+    {
+      "id": "phase_6_task_8",
+      "title": "Test automatic rollback on failure",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 367
+    },
+    {
+      "id": "phase_6_task_9",
+      "title": "Verify rollback completes successfully",
+      "phase": "Analysis Validation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 368
+    },
+    {
+      "id": "phase_7_task_1",
+      "title": "Monitor traffic at each weight (10%, 25%, 50%, 75%)",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 371
+    },
+    {
+      "id": "phase_7_task_2",
+      "title": "Watch for error rate increases",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 372
+    },
+    {
+      "id": "phase_7_task_3",
+      "title": "Track latency metrics",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 373
+    },
+    {
+      "id": "phase_7_task_4",
+      "title": "Monitor resource utilization",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 374
+    },
+    {
+      "id": "phase_7_task_5",
+      "title": "Check application logs for errors",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 375
+    },
+    {
+      "id": "phase_7_task_6",
+      "title": "Verify database performance",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 376
+    },
+    {
+      "id": "phase_7_task_7",
+      "title": "Monitor external API calls",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 377
+    },
+    {
+      "id": "phase_7_task_8",
+      "title": "Check cache hit rates",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 378
+    },
+    {
+      "id": "phase_7_task_9",
+      "title": "Review custom business metrics",
+      "phase": "Progressive Rollout Monitoring",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 379
+    },
+    {
+      "id": "phase_8_task_1",
+      "title": "Wait for 100% traffic to canary",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 382
+    },
+    {
+      "id": "phase_8_task_2",
+      "title": "Verify all traffic switched",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 383
+    },
+    {
+      "id": "phase_8_task_3",
+      "title": "Run production smoke tests",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 384
+    },
+    {
+      "id": "phase_8_task_4",
+      "title": "Execute full integration test suite",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 385
+    },
+    {
+      "id": "phase_8_task_5",
+      "title": "Monitor production metrics",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 386
+    },
+    {
+      "id": "phase_8_task_6",
+      "title": "Check error rates remain low",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 387
+    },
+    {
+      "id": "phase_8_task_7",
+      "title": "Verify latency is acceptable",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 388
+    },
+    {
+      "id": "phase_8_task_8",
+      "title": "Confirm stable version scaled down",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 389
+    },
+    {
+      "id": "phase_8_task_9",
+      "title": "Clean up old ReplicaSets",
+      "phase": "Full Promotion",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 390
+    },
+    {
+      "id": "phase_9_task_1",
+      "title": "Trigger analysis failure intentionally",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 393
+    },
+    {
+      "id": "phase_9_task_2",
+      "title": "Verify automatic rollback occurs",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 394
+    },
+    {
+      "id": "phase_9_task_3",
+      "title": "Check traffic reverts to stable version",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 395
+    },
+    {
+      "id": "phase_9_task_4",
+      "title": "Measure rollback duration",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 396
+    },
+    {
+      "id": "phase_9_task_5",
+      "title": "Verify application remains available",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 397
+    },
+    {
+      "id": "phase_9_task_6",
+      "title": "Test manual abort command",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 398
+    },
+    {
+      "id": "phase_9_task_7",
+      "title": "Practice emergency rollback procedure",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 399
+    },
+    {
+      "id": "phase_9_task_8",
+      "title": "Document rollback steps in runbook",
+      "phase": "Rollback Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 400
+    },
+    {
+      "id": "phase_10_task_1",
+      "title": "Fine-tune traffic split percentages",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 403
+    },
+    {
+      "id": "phase_10_task_2",
+      "title": "Adjust pause durations",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 404
+    },
+    {
+      "id": "phase_10_task_3",
+      "title": "Optimize analysis query intervals",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 405
+    },
+    {
+      "id": "phase_10_task_4",
+      "title": "Add additional metrics to analysis",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 406
+    },
+    {
+      "id": "phase_10_task_5",
+      "title": "Configure multiple analysis templates",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 407
+    },
+    {
+      "id": "phase_10_task_6",
+      "title": "Implement baseline vs canary comparison",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 408
+    },
+    {
+      "id": "phase_10_task_7",
+      "title": "Set up automated notifications",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 409
+    },
+    {
+      "id": "phase_10_task_8",
+      "title": "Create custom dashboards",
+      "phase": "Optimization",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 410
+    },
+    {
+      "id": "phase_11_task_1",
+      "title": "Implement experiment-based canary (A/B testing)",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 413
+    },
+    {
+      "id": "phase_11_task_2",
+      "title": "Configure header-based routing",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 414
+    },
+    {
+      "id": "phase_11_task_3",
+      "title": "Set up canary with Istio service mesh",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 415
+    },
+    {
+      "id": "phase_11_task_4",
+      "title": "Implement traffic mirroring/shadowing",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 416
+    },
+    {
+      "id": "phase_11_task_5",
+      "title": "Configure ALB for AWS environments",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 417
+    },
+    {
+      "id": "phase_11_task_6",
+      "title": "Set up multi-stage canary (dev\u2192staging\u2192prod)",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 418
+    },
+    {
+      "id": "phase_11_task_7",
+      "title": "Implement automated approval gates",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 419
+    },
+    {
+      "id": "phase_11_task_8",
+      "title": "Create deployment templates",
+      "phase": "Advanced Configuration",
+      "priority": "low",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 11",
+      "line_number": 420
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+flask>=2.0.0
+flask-socketio>=5.0.0
+cryptography>=3.4.0
+redis>=4.0.0
+
+

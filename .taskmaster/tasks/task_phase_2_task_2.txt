@@ -1,0 +1,11 @@
+# Task ID: phase_2_task_2
+# Title: Create Rollout manifest with blue-green strategy
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 
+# Details:
+
+
+# Test Strategy:
+

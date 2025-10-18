@@ -573,6 +573,20 @@ class GoogleDocsService:
         """Initialize service."""
         self.db = DocumentDatabase(db_path)
         self.editor = CollaborativeEditor(self.db)
+    
+    def create_user(self, username: str, email: str, first_name: str, last_name: str) -> Optional[User]:
+        """Create a new user."""
+        user = User(
+            id=str(uuid.uuid4()),
+            username=username,
+            email=email,
+            display_name=f"{first_name} {last_name}",
+            created_at=datetime.now()
+        )
+        
+        if self.db.save_user(user):
+            return user
+        return None
 
     def create_document(self, title: str, owner_id: str, content: str = "") -> Dict:
         """Create a new document."""
@@ -615,6 +629,27 @@ class GoogleDocsService:
             results.append({'success': success, 'message': message})
         
         return {'success': all(r['success'] for r in results), 'results': results}
+    
+    def update_document_content(self, document_id: str, user_id: str, content: str) -> bool:
+        """Update document content directly."""
+        document = self.db.get_document(document_id)
+        if not document:
+            return False
+        
+        if not self.editor._has_permission(document, user_id, 'edit'):
+            return False
+        
+        # Update the document content
+        document.content = content
+        document.updated_at = datetime.now()
+        document.version += 1
+        
+        return self.db.save_document(document)
+    
+    def get_user_documents(self, user_id: str) -> List[Dict]:
+        """Get all documents for a user."""
+        documents = self.db.get_user_documents(user_id)
+        return [doc.to_dict() for doc in documents]
 
     def share_document(self, document_id: str, owner_id: str, 
                       user_id: str, permission: str) -> Dict:

@@ -1,0 +1,309 @@
+2025-10-16 00:32:46,977 - INFO - 🚀 Starting Comprehensive Test Suite
+2025-10-16 00:32:46,977 - INFO - 📊 Running Unit Tests with Coverage Analysis
+2025-10-16 00:32:46,977 - INFO - 🔍 Testing systems/tinyurl with coverage analysis
+2025-10-16 00:32:48,562 - INFO - ✅ systems/tinyurl/test_tinyurl.py: 0.0% coverage
+2025-10-16 00:32:48,563 - INFO - 🔍 Testing systems/newsfeed with coverage analysis
+2025-10-16 00:32:51,880 - INFO - ✅ systems/newsfeed/test_newsfeed.py: 0.0% coverage
+2025-10-16 00:32:51,880 - INFO - 🔍 Testing systems/google-docs with coverage analysis
+2025-10-16 00:32:54,794 - INFO - ✅ systems/google-docs/test_google_docs.py: 0.0% coverage
+2025-10-16 00:32:54,795 - INFO - 🔍 Testing systems/quora with coverage analysis
+2025-10-16 00:32:56,610 - INFO - ✅ systems/quora/test_quora.py: 0.0% coverage
+2025-10-16 00:32:56,610 - INFO - 🔍 Testing systems/load_balancer with coverage analysis
+2025-10-16 00:32:57,862 - INFO - ✅ systems/load_balancer/test_load_balancer.py: 0.0% coverage
+2025-10-16 00:32:57,862 - INFO - 🔍 Testing systems/monitoring with coverage analysis
+2025-10-16 00:33:00,042 - INFO - ✅ systems/monitoring/test_monitoring.py: 0.0% coverage
+2025-10-16 00:33:00,042 - INFO - 🔍 Testing systems/typeahead with coverage analysis
+2025-10-16 00:33:02,634 - INFO - ✅ systems/typeahead/test_typeahead.py: 0.0% coverage
+2025-10-16 00:33:02,635 - INFO - 🔍 Testing systems/messaging with coverage analysis
+2025-10-16 00:33:02,635 - WARNING - ⚠️ No test files found in systems/messaging
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/web_crawler not found, skipping...
+2025-10-16 00:33:02,635 - INFO - 🔍 Testing systems/dns with coverage analysis
+2025-10-16 00:33:02,635 - WARNING - ⚠️ No test files found in systems/dns
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/lending_product not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/book_subscription not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/adtech_platform not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/cdn_system not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/key_value_store not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/google_maps not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/distributed_cache not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/care_finder not found, skipping...
+2025-10-16 00:33:02,635 - WARNING - ⚠️ System systems/ace_causal_inference not found, skipping...
+2025-10-16 00:33:02,635 - INFO - 🔗 Running Integration Tests
+2025-10-16 00:33:02,635 - INFO - 🔗 Running integration tests...
+2025-10-16 00:33:04,642 - ERROR - ❌ TinyURL + Load Balancer integration test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:33:06,650 - ERROR - ❌ Newsfeed + Monitoring integration test failed: 404
+2025-10-16 00:33:08,654 - ERROR - ❌ Google Docs + Quora integration test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6fb71f6c10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:33:10,667 - ERROR - ❌ All systems + Load Balancer integration test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:33:10,668 - INFO - ⚡ Running Performance Benchmarks
+2025-10-16 00:33:10,668 - INFO - ⚡ Running performance tests...
+2025-10-16 00:33:11,696 - INFO - ✅ TinyURL Performance: 4003.57 URLs/sec
+2025-10-16 00:33:12,721 - INFO - ✅ Newsfeed Performance: 2921.27 feeds/sec
+2025-10-16 00:33:13,727 - ERROR - ❌ Load Balancer performance test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:33:14,960 - INFO - ✅ Monitoring Performance: 432.20 req/sec
+2025-10-16 00:33:14,960 - INFO - 🖥️ Running UI Tests
+2025-10-16 00:33:14,960 - INFO - 🖥️ Running UI tests...
+2025-10-16 00:33:16,003 - INFO - ✅ tinyurl UI test passed
+2025-10-16 00:33:17,009 - INFO - ✅ newsfeed UI test passed
+2025-10-16 00:33:18,013 - ERROR - ❌ google-docs UI test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6fb72fb460>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:33:19,017 - ERROR - ❌ quora UI test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6fb72fb570>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:33:20,022 - ERROR - ❌ load_balancer UI test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:33:21,033 - INFO - ✅ monitoring UI test passed
+2025-10-16 00:33:21,033 - INFO - 🎯 Running Edge Case Tests
+2025-10-16 00:33:21,033 - INFO - 🎯 Running edge case tests...
+2025-10-16 00:33:22,038 - ERROR - ❌ Invalid input test error: Expecting value: line 1 column 1 (char 0)
+2025-10-16 00:33:23,043 - INFO - ✅ Empty data handling test passed
+2025-10-16 00:33:24,049 - ERROR - ❌ Large data test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6fb72fb020>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:33:25,072 - ERROR - ❌ Concurrent requests test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6fb72fb020>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:33:25,072 - INFO - 🔒 Running Security Tests
+2025-10-16 00:33:25,072 - INFO - 🔒 Running security tests...
+2025-10-16 00:33:26,077 - ERROR - ❌ SQL injection test failed
+2025-10-16 00:33:27,079 - ERROR - ❌ XSS test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6fb72fa250>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:33:28,083 - ERROR - ❌ Authentication test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6fb72fa470>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:33:28,083 - INFO - 📈 Running Load Tests
+2025-10-16 00:33:28,083 - INFO - 📈 Running load tests...
+2025-10-16 00:33:31,003 - ERROR - ❌ High load test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:33:36,006 - INFO - ✅ Memory usage test passed: 0.0MB increase
+2025-10-16 00:33:43,013 - ERROR - ❌ CPU usage test failed: 93.6% CPU
+2025-10-16 00:33:43,013 - INFO - 🌐 Running End-to-End Tests
+2025-10-16 00:33:43,013 - INFO - 🌐 Running end-to-end tests...
+2025-10-16 00:33:49,023 - ERROR - ❌ Complete workflow test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:33:51,027 - ERROR - ❌ System interactions test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:33:51,029 - INFO - 📄 HTML report generated: comprehensive_test_report.html
+2025-10-16 00:33:51,029 - INFO - ✅ Comprehensive Test Suite Completed Successfully!
+2025-10-16 00:52:04,737 - INFO - 🚀 Starting Comprehensive Test Suite
+2025-10-16 00:52:04,737 - INFO - 📊 Running Unit Tests with Coverage Analysis
+2025-10-16 00:52:04,737 - INFO - 🔍 Testing systems/tinyurl with coverage analysis
+2025-10-16 00:52:05,595 - INFO - ✅ systems/tinyurl/test_tinyurl.py: 0.0% coverage
+2025-10-16 00:52:05,595 - INFO - 🔍 Testing systems/newsfeed with coverage analysis
+2025-10-16 00:52:06,925 - INFO - ✅ systems/newsfeed/test_newsfeed.py: 0.0% coverage
+2025-10-16 00:52:06,925 - INFO - 🔍 Testing systems/google-docs with coverage analysis
+2025-10-16 00:52:08,066 - INFO - ✅ systems/google-docs/test_google_docs.py: 0.0% coverage
+2025-10-16 00:52:08,066 - INFO - 🔍 Testing systems/quora with coverage analysis
+2025-10-16 00:52:08,650 - INFO - ✅ systems/quora/test_quora.py: 0.0% coverage
+2025-10-16 00:52:08,650 - INFO - 🔍 Testing systems/load_balancer with coverage analysis
+2025-10-16 00:52:09,569 - INFO - ✅ systems/load_balancer/test_load_balancer.py: 0.0% coverage
+2025-10-16 00:52:09,569 - INFO - 🔍 Testing systems/monitoring with coverage analysis
+2025-10-16 00:52:11,637 - INFO - ✅ systems/monitoring/test_monitoring.py: 0.0% coverage
+2025-10-16 00:52:11,637 - INFO - 🔍 Testing systems/typeahead with coverage analysis
+2025-10-16 00:52:14,063 - INFO - ✅ systems/typeahead/test_typeahead.py: 0.0% coverage
+2025-10-16 00:52:14,063 - INFO - 🔍 Testing systems/messaging with coverage analysis
+2025-10-16 00:52:15,021 - INFO - ✅ systems/messaging/test_messaging.py: 0.0% coverage
+2025-10-16 00:52:15,021 - INFO - 🔍 Testing systems/web_crawler with coverage analysis
+2025-10-16 00:52:15,787 - INFO - ✅ systems/web_crawler/test_web_crawler.py: 0.0% coverage
+2025-10-16 00:52:15,787 - INFO - 🔍 Testing systems/dns with coverage analysis
+2025-10-16 00:52:15,787 - WARNING - ⚠️ No test files found in systems/dns
+2025-10-16 00:52:15,787 - WARNING - ⚠️ System systems/lending_product not found, skipping...
+2025-10-16 00:52:15,787 - WARNING - ⚠️ System systems/book_subscription not found, skipping...
+2025-10-16 00:52:15,787 - WARNING - ⚠️ System systems/adtech_platform not found, skipping...
+2025-10-16 00:52:15,787 - WARNING - ⚠️ System systems/cdn_system not found, skipping...
+2025-10-16 00:52:15,787 - WARNING - ⚠️ System systems/key_value_store not found, skipping...
+2025-10-16 00:52:15,787 - WARNING - ⚠️ System systems/google_maps not found, skipping...
+2025-10-16 00:52:15,787 - WARNING - ⚠️ System systems/distributed_cache not found, skipping...
+2025-10-16 00:52:15,788 - WARNING - ⚠️ System systems/care_finder not found, skipping...
+2025-10-16 00:52:15,788 - WARNING - ⚠️ System systems/ace_causal_inference not found, skipping...
+2025-10-16 00:52:15,788 - INFO - 🔗 Running Integration Tests
+2025-10-16 00:52:15,788 - INFO - 🔗 Running integration tests...
+2025-10-16 00:52:17,791 - ERROR - ❌ TinyURL + Load Balancer integration test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:52:19,796 - ERROR - ❌ Newsfeed + Monitoring integration test failed: 404
+2025-10-16 00:52:21,799 - ERROR - ❌ Google Docs + Quora integration test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f22c12d6fd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:52:23,803 - ERROR - ❌ All systems + Load Balancer integration test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:52:23,803 - INFO - ⚡ Running Performance Benchmarks
+2025-10-16 00:52:23,803 - INFO - ⚡ Running performance tests...
+2025-10-16 00:52:24,807 - INFO - ✅ TinyURL Performance: 33251.18 URLs/sec
+2025-10-16 00:52:25,811 - INFO - ✅ Newsfeed Performance: 15404.38 feeds/sec
+2025-10-16 00:52:26,815 - ERROR - ❌ Load Balancer performance test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:52:28,036 - INFO - ✅ Monitoring Performance: 454.13 req/sec
+2025-10-16 00:52:28,036 - INFO - 🖥️ Running UI Tests
+2025-10-16 00:52:28,036 - INFO - 🖥️ Running UI tests...
+2025-10-16 00:52:29,041 - INFO - ✅ tinyurl UI test passed
+2025-10-16 00:52:30,046 - INFO - ✅ newsfeed UI test passed
+2025-10-16 00:52:31,048 - ERROR - ❌ google-docs UI test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f22c13dbbd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:52:32,050 - ERROR - ❌ quora UI test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f22c13dbce0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:52:33,054 - ERROR - ❌ load_balancer UI test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:52:34,063 - INFO - ✅ monitoring UI test passed
+2025-10-16 00:52:34,064 - INFO - 🎯 Running Edge Case Tests
+2025-10-16 00:52:34,064 - INFO - 🎯 Running edge case tests...
+2025-10-16 00:52:35,069 - ERROR - ❌ Invalid input test error: Expecting value: line 1 column 1 (char 0)
+2025-10-16 00:52:36,074 - INFO - ✅ Empty data handling test passed
+2025-10-16 00:52:37,077 - ERROR - ❌ Large data test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f22c13db790>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:52:38,096 - ERROR - ❌ Concurrent requests test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f22c0f0c270>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:52:38,097 - INFO - 🔒 Running Security Tests
+2025-10-16 00:52:38,097 - INFO - 🔒 Running security tests...
+2025-10-16 00:52:39,102 - ERROR - ❌ SQL injection test failed
+2025-10-16 00:52:40,104 - ERROR - ❌ XSS test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f22c13da580>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:52:41,107 - ERROR - ❌ Authentication test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f22c13da690>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-16 00:52:41,107 - INFO - 📈 Running Load Tests
+2025-10-16 00:52:41,107 - INFO - 📈 Running load tests...
+2025-10-16 00:52:44,827 - ERROR - ❌ High load test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:52:49,830 - INFO - ✅ Memory usage test passed: 0.0MB increase
+2025-10-16 00:52:56,833 - INFO - ✅ CPU usage test passed: 19.0% CPU
+2025-10-16 00:52:56,833 - INFO - 🌐 Running End-to-End Tests
+2025-10-16 00:52:56,833 - INFO - 🌐 Running end-to-end tests...
+2025-10-16 00:53:02,843 - ERROR - ❌ Complete workflow test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:53:04,846 - ERROR - ❌ System interactions test error: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-10-16 00:53:04,846 - INFO - 📄 HTML report generated: comprehensive_test_report.html
+2025-10-16 00:53:04,847 - INFO - ✅ Comprehensive Test Suite Completed Successfully!
+2025-10-17 00:55:28,077 - INFO - 🚀 Starting Comprehensive Test Suite
+2025-10-17 00:55:28,077 - INFO - 📊 Running Unit Tests with Coverage Analysis
+2025-10-17 00:55:28,077 - INFO - 🔍 Testing systems/tinyurl with coverage analysis
+2025-10-17 00:55:28,651 - INFO - ✅ systems/tinyurl/test_tinyurl.py: 0.0% coverage
+2025-10-17 00:55:28,651 - INFO - 🔍 Testing systems/newsfeed with coverage analysis
+2025-10-17 00:55:30,126 - INFO - ✅ systems/newsfeed/test_newsfeed.py: 0.0% coverage
+2025-10-17 00:55:30,126 - INFO - 🔍 Testing systems/google-docs with coverage analysis
+2025-10-17 00:55:30,852 - INFO - ✅ systems/google-docs/test_google_docs.py: 0.0% coverage
+2025-10-17 00:55:30,852 - INFO - 🔍 Testing systems/quora with coverage analysis
+2025-10-17 00:55:31,259 - INFO - ✅ systems/quora/test_quora.py: 0.0% coverage
+2025-10-17 00:55:31,259 - INFO - 🔍 Testing systems/load_balancer with coverage analysis
+2025-10-17 00:55:31,987 - INFO - ✅ systems/load_balancer/test_load_balancer.py: 0.0% coverage
+2025-10-17 00:55:31,987 - INFO - 🔍 Testing systems/monitoring with coverage analysis
+2025-10-17 00:55:33,498 - INFO - ✅ systems/monitoring/test_monitoring.py: 0.0% coverage
+2025-10-17 00:55:33,498 - INFO - 🔍 Testing systems/typeahead with coverage analysis
+2025-10-17 00:55:35,863 - INFO - ✅ systems/typeahead/test_typeahead.py: 0.0% coverage
+2025-10-17 00:55:35,863 - INFO - 🔍 Testing systems/messaging with coverage analysis
+2025-10-17 00:55:36,393 - INFO - ✅ systems/messaging/test_messaging.py: 0.0% coverage
+2025-10-17 00:55:36,393 - INFO - 🔍 Testing systems/web_crawler with coverage analysis
+2025-10-17 00:55:36,829 - INFO - ✅ systems/web_crawler/test_web_crawler.py: 0.0% coverage
+2025-10-17 00:55:36,829 - INFO - 🔍 Testing systems/dns with coverage analysis
+2025-10-17 00:55:37,242 - INFO - ✅ systems/dns/test_dns.py: 0.0% coverage
+2025-10-17 00:55:37,242 - INFO - 🔍 Testing systems/lending_product with coverage analysis
+2025-10-17 00:55:37,714 - INFO - ✅ systems/lending_product/test_lending_product.py: 0.0% coverage
+2025-10-17 00:55:37,714 - INFO - 🔍 Testing systems/book_subscription with coverage analysis
+2025-10-17 00:55:38,191 - INFO - ✅ systems/book_subscription/test_book_subscription.py: 0.0% coverage
+2025-10-17 00:55:38,191 - INFO - 🔍 Testing systems/adtech_platform with coverage analysis
+2025-10-17 00:55:38,743 - INFO - ✅ systems/adtech_platform/test_adtech.py: 0.0% coverage
+2025-10-17 00:55:38,743 - INFO - 🔍 Testing systems/cdn_system with coverage analysis
+2025-10-17 00:55:40,351 - INFO - ✅ systems/cdn_system/test_cdn.py: 0.0% coverage
+2025-10-17 00:55:40,351 - INFO - 🔍 Testing systems/key_value_store with coverage analysis
+2025-10-17 00:55:47,253 - INFO - ✅ systems/key_value_store/test_key_value.py: 0.0% coverage
+2025-10-17 00:55:47,253 - INFO - 🔍 Testing systems/google_maps with coverage analysis
+2025-10-17 00:55:47,704 - INFO - ✅ systems/google_maps/test_google_maps.py: 0.0% coverage
+2025-10-17 00:55:47,704 - INFO - 🔍 Testing systems/distributed_cache with coverage analysis
+2025-10-17 00:55:51,341 - INFO - ✅ systems/distributed_cache/test_distributed_cache.py: 0.0% coverage
+2025-10-17 00:55:51,341 - INFO - 🔍 Testing systems/care_finder with coverage analysis
+2025-10-17 00:55:51,874 - INFO - ✅ systems/care_finder/test_care_finder.py: 0.0% coverage
+2025-10-17 00:55:51,874 - INFO - 🔍 Testing systems/ace_causal_inference with coverage analysis
+2025-10-17 00:55:53,207 - INFO - ✅ systems/ace_causal_inference/test_ace_causal_inference.py: 0.0% coverage
+2025-10-17 00:55:53,207 - INFO - 🔗 Running Integration Tests
+2025-10-17 00:55:53,207 - INFO - 🔗 Running integration tests...
+2025-10-17 00:55:55,211 - ERROR - ❌ TinyURL + Load Balancer integration test failed: 503
+2025-10-17 00:55:57,214 - ERROR - ❌ Newsfeed + Monitoring integration test failed: 404
+2025-10-17 00:55:59,216 - ERROR - ❌ Google Docs + Quora integration test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7efccad93d90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 00:56:01,229 - INFO - ✅ All systems + Load Balancer integration test passed
+2025-10-17 00:56:01,230 - INFO - ⚡ Running Performance Benchmarks
+2025-10-17 00:56:01,230 - INFO - ⚡ Running performance tests...
+2025-10-17 00:56:02,233 - INFO - ✅ TinyURL Performance: 43997.73 URLs/sec
+2025-10-17 00:56:03,236 - INFO - ✅ Newsfeed Performance: 23547.63 feeds/sec
+2025-10-17 00:56:04,465 - INFO - ✅ Load Balancer Performance: 875.09 req/sec
+2025-10-17 00:56:05,595 - INFO - ✅ Monitoring Performance: 769.71 req/sec
+2025-10-17 00:56:05,596 - INFO - 🖥️ Running UI Tests
+2025-10-17 00:56:05,596 - INFO - 🖥️ Running UI tests...
+2025-10-17 00:56:06,599 - INFO - ✅ tinyurl UI test passed
+2025-10-17 00:56:07,602 - INFO - ✅ newsfeed UI test passed
+2025-10-17 00:56:08,603 - ERROR - ❌ google-docs UI test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7efccae9b570>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 00:56:09,605 - ERROR - ❌ quora UI test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7efccae9b240>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 00:56:10,612 - INFO - ✅ load_balancer UI test passed
+2025-10-17 00:56:11,621 - INFO - ✅ monitoring UI test passed
+2025-10-17 00:56:11,621 - INFO - 🎯 Running Edge Case Tests
+2025-10-17 00:56:11,621 - INFO - 🎯 Running edge case tests...
+2025-10-17 00:56:12,626 - ERROR - ❌ Invalid input test error: Expecting value: line 1 column 1 (char 0)
+2025-10-17 00:56:13,629 - INFO - ✅ Empty data handling test passed
+2025-10-17 00:56:14,631 - ERROR - ❌ Large data test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7efccae9bbd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 00:56:15,638 - ERROR - ❌ Concurrent requests test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7efccae9b350>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 00:56:15,639 - INFO - 🔒 Running Security Tests
+2025-10-17 00:56:15,639 - INFO - 🔒 Running security tests...
+2025-10-17 00:56:16,642 - ERROR - ❌ SQL injection test failed
+2025-10-17 00:56:17,644 - ERROR - ❌ XSS test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7efccae9a7a0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 00:56:18,646 - ERROR - ❌ Authentication test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7efccae9b130>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 00:56:18,646 - INFO - 📈 Running Load Tests
+2025-10-17 00:56:18,646 - INFO - 📈 Running load tests...
+2025-10-17 00:56:20,270 - INFO - ✅ High load test passed: 100.00% success rate
+2025-10-17 00:56:25,283 - INFO - ✅ Memory usage test passed: 0.0MB increase
+2025-10-17 00:56:32,284 - INFO - ✅ CPU usage test passed: 8.7% CPU
+2025-10-17 00:56:32,284 - INFO - 🌐 Running End-to-End Tests
+2025-10-17 00:56:32,284 - INFO - 🌐 Running end-to-end tests...
+2025-10-17 00:56:38,293 - ERROR - ❌ Complete workflow test failed
+2025-10-17 00:56:40,307 - INFO - ✅ System interactions test passed
+2025-10-17 00:56:40,308 - INFO - 📄 HTML report generated: comprehensive_test_report.html
+2025-10-17 00:56:40,308 - INFO - ✅ Comprehensive Test Suite Completed Successfully!
+2025-10-17 08:29:00,056 - INFO - 🚀 Starting Comprehensive Test Suite
+2025-10-17 08:29:00,057 - INFO - 📊 Running Unit Tests with Coverage Analysis
+2025-10-17 08:29:00,057 - INFO - 🔍 Testing systems/tinyurl with coverage analysis
+2025-10-17 08:29:00,984 - INFO - ✅ systems/tinyurl/test_tinyurl.py: 0.0% coverage
+2025-10-17 08:29:00,985 - INFO - 🔍 Testing systems/newsfeed with coverage analysis
+2025-10-17 08:29:03,064 - INFO - ✅ systems/newsfeed/test_newsfeed.py: 0.0% coverage
+2025-10-17 08:29:03,064 - INFO - 🔍 Testing systems/google-docs with coverage analysis
+2025-10-17 08:29:04,355 - INFO - ✅ systems/google-docs/test_google_docs.py: 0.0% coverage
+2025-10-17 08:29:04,355 - INFO - 🔍 Testing systems/quora with coverage analysis
+2025-10-17 08:29:05,175 - INFO - ✅ systems/quora/test_quora.py: 0.0% coverage
+2025-10-17 08:29:05,175 - INFO - 🔍 Testing systems/load_balancer with coverage analysis
+2025-10-17 08:29:06,212 - INFO - ✅ systems/load_balancer/test_load_balancer.py: 0.0% coverage
+2025-10-17 08:29:06,212 - INFO - 🔍 Testing systems/monitoring with coverage analysis
+2025-10-17 08:29:08,090 - INFO - ✅ systems/monitoring/test_monitoring.py: 0.0% coverage
+2025-10-17 08:29:08,090 - INFO - 🔍 Testing systems/typeahead with coverage analysis
+2025-10-17 08:29:10,662 - INFO - ✅ systems/typeahead/test_typeahead.py: 0.0% coverage
+2025-10-17 08:29:10,662 - INFO - 🔍 Testing systems/messaging with coverage analysis
+2025-10-17 08:29:11,797 - INFO - ✅ systems/messaging/test_messaging.py: 0.0% coverage
+2025-10-17 08:29:11,797 - INFO - 🔍 Testing systems/web_crawler with coverage analysis
+2025-10-17 08:29:12,666 - INFO - ✅ systems/web_crawler/test_web_crawler.py: 0.0% coverage
+2025-10-17 08:29:12,667 - INFO - 🔍 Testing systems/dns with coverage analysis
+2025-10-17 08:29:13,247 - INFO - ✅ systems/dns/test_dns.py: 0.0% coverage
+2025-10-17 08:29:13,247 - INFO - 🔍 Testing systems/lending_product with coverage analysis
+2025-10-17 08:29:13,888 - INFO - ✅ systems/lending_product/test_lending_product.py: 0.0% coverage
+2025-10-17 08:29:13,888 - INFO - 🔍 Testing systems/book_subscription with coverage analysis
+2025-10-17 08:29:14,575 - INFO - ✅ systems/book_subscription/test_book_subscription.py: 0.0% coverage
+2025-10-17 08:29:14,575 - INFO - 🔍 Testing systems/adtech_platform with coverage analysis
+2025-10-17 08:29:15,297 - INFO - ✅ systems/adtech_platform/test_adtech.py: 0.0% coverage
+2025-10-17 08:29:15,298 - INFO - 🔍 Testing systems/cdn_system with coverage analysis
+2025-10-17 08:29:17,142 - INFO - ✅ systems/cdn_system/test_cdn.py: 0.0% coverage
+2025-10-17 08:29:17,142 - INFO - 🔍 Testing systems/key_value_store with coverage analysis
+2025-10-17 08:29:26,269 - INFO - ✅ systems/key_value_store/test_key_value.py: 0.0% coverage
+2025-10-17 08:29:26,270 - INFO - 🔍 Testing systems/google_maps with coverage analysis
+2025-10-17 08:29:26,919 - INFO - ✅ systems/google_maps/test_google_maps.py: 0.0% coverage
+2025-10-17 08:29:26,919 - INFO - 🔍 Testing systems/distributed_cache with coverage analysis
+2025-10-17 08:29:31,476 - INFO - ✅ systems/distributed_cache/test_distributed_cache.py: 0.0% coverage
+2025-10-17 08:29:31,476 - INFO - 🔍 Testing systems/care_finder with coverage analysis
+2025-10-17 08:29:32,242 - INFO - ✅ systems/care_finder/test_care_finder.py: 0.0% coverage
+2025-10-17 08:29:32,243 - INFO - 🔍 Testing systems/ace_causal_inference with coverage analysis
+2025-10-17 08:29:34,773 - INFO - ✅ systems/ace_causal_inference/test_ace_causal_inference.py: 0.0% coverage
+2025-10-17 08:29:34,774 - INFO - 🔗 Running Integration Tests
+2025-10-17 08:29:34,774 - INFO - 🔗 Running integration tests...
+2025-10-17 08:29:36,779 - ERROR - ❌ TinyURL + Load Balancer integration test failed: 429
+2025-10-17 08:29:38,785 - ERROR - ❌ Newsfeed + Monitoring integration test failed: 404
+2025-10-17 08:29:40,788 - ERROR - ❌ Google Docs + Quora integration test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdf29c17d90>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 08:29:42,797 - INFO - ✅ All systems + Load Balancer integration test passed
+2025-10-17 08:29:42,797 - INFO - ⚡ Running Performance Benchmarks
+2025-10-17 08:29:42,797 - INFO - ⚡ Running performance tests...
+2025-10-17 08:29:43,805 - INFO - ✅ TinyURL Performance: 13498.23 URLs/sec
+2025-10-17 08:29:44,810 - INFO - ✅ Newsfeed Performance: 15719.60 feeds/sec
+2025-10-17 08:29:46,106 - INFO - ✅ Load Balancer Performance: 676.91 req/sec
+2025-10-17 08:29:47,297 - INFO - ✅ Monitoring Performance: 528.01 req/sec
+2025-10-17 08:29:47,297 - INFO - 🖥️ Running UI Tests
+2025-10-17 08:29:47,297 - INFO - 🖥️ Running UI tests...
+2025-10-17 08:29:48,327 - INFO - ✅ tinyurl UI test passed
+2025-10-17 08:29:49,331 - INFO - ✅ newsfeed UI test passed
+2025-10-17 08:29:50,333 - ERROR - ❌ google-docs UI test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdf29d1f570>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 08:29:51,335 - ERROR - ❌ quora UI test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdf29d1f240>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 08:29:52,343 - INFO - ✅ load_balancer UI test passed
+2025-10-17 08:29:53,389 - INFO - ✅ monitoring UI test passed
+2025-10-17 08:29:53,389 - INFO - 🎯 Running Edge Case Tests
+2025-10-17 08:29:53,389 - INFO - 🎯 Running edge case tests...
+2025-10-17 08:29:54,394 - ERROR - ❌ Invalid input test error: Expecting value: line 1 column 1 (char 0)
+2025-10-17 08:29:55,402 - INFO - ✅ Empty data handling test passed
+2025-10-17 08:29:56,406 - ERROR - ❌ Large data test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdf29d1fbd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 08:29:57,415 - ERROR - ❌ Concurrent requests test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdf29d1f8a0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 08:29:57,416 - INFO - 🔒 Running Security Tests
+2025-10-17 08:29:57,416 - INFO - 🔒 Running security tests...
+2025-10-17 08:29:58,420 - ERROR - ❌ SQL injection test failed
+2025-10-17 08:29:59,423 - ERROR - ❌ XSS test error: HTTPConnectionPool(host='localhost', port=5003): Max retries exceeded with url: /api/questions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdf29d1f130>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 08:30:00,426 - ERROR - ❌ Authentication test error: HTTPConnectionPool(host='localhost', port=5002): Max retries exceeded with url: /api/documents (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fdf29d1f460>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-10-17 08:30:00,426 - INFO - 📈 Running Load Tests
+2025-10-17 08:30:00,426 - INFO - 📈 Running load tests...
+2025-10-17 08:30:02,611 - INFO - ✅ High load test passed: 100.00% success rate
+2025-10-17 08:30:07,651 - INFO - ✅ Memory usage test passed: 0.0MB increase
+2025-10-17 08:30:14,653 - INFO - ✅ CPU usage test passed: 12.5% CPU
+2025-10-17 08:30:14,654 - INFO - 🌐 Running End-to-End Tests
+2025-10-17 08:30:14,654 - INFO - 🌐 Running end-to-end tests...
+2025-10-17 08:30:20,668 - ERROR - ❌ Complete workflow test failed
+2025-10-17 08:30:22,690 - INFO - ✅ System interactions test passed
+2025-10-17 08:30:22,691 - INFO - 📄 HTML report generated: comprehensive_test_report.html
+2025-10-17 08:30:22,691 - INFO - ✅ Comprehensive Test Suite Completed Successfully!

@@ -1,0 +1,65 @@
+# Canary Services
+apiVersion: v1
+kind: Service
+metadata:
+  name: canary-stable
+  namespace: canary-canary
+  labels:
+    app: canary-app
+    app.kubernetes.io/name: canary-app
+    app.kubernetes.io/part-of: canary-deployment
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: canary-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: canary-canary-svc
+  namespace: canary-canary
+  labels:
+    app: canary-app
+    app.kubernetes.io/name: canary-app
+    app.kubernetes.io/part-of: canary-deployment
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: canary-app
+---
+# Ingress for Canary
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: canary-ingress
+  namespace: canary-canary
+  labels:
+    app: canary-app
+    app.kubernetes.io/name: canary-app
+    app.kubernetes.io/part-of: canary-deployment
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "0"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: canary.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: canary-stable
+            port:
+              number: 80

@@ -1,0 +1,11 @@
+# Task ID: phase_3_task_4
+# Title: Create ingress with traffic splitting
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 
+# Details:
+
+
+# Test Strategy:
+

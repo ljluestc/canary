@@ -1,0 +1,11 @@
+# Task ID: phase_3_task_6
+# Title: Create ArgoCD application
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 
+# Details:
+
+
+# Test Strategy:
+

@@ -1,0 +1,1228 @@
+{
+  "metadata": {
+    "title": "Setup Guide",
+    "sections": [
+      "## 6. Implementation Phases"
+    ],
+    "total_tasks": 58,
+    "total_phases": 9
+  },
+  "phases": [
+    {
+      "name": "Prerequisites Verification",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_1_task_1",
+          "title": "Verify Docker installation and version",
+          "phase": "Prerequisites Verification",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 503
+        },
+        {
+          "id": "phase_1_task_2",
+          "title": "Verify kubectl installation and version",
+          "phase": "Prerequisites Verification",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 504
+        },
+        {
+          "id": "phase_1_task_3",
+          "title": "Install kind for local Kubernetes cluster",
+          "phase": "Prerequisites Verification",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 505
+        },
+        {
+          "id": "phase_1_task_4",
+          "title": "Verify Terraform installation",
+          "phase": "Prerequisites Verification",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 506
+        },
+        {
+          "id": "phase_1_task_5",
+          "title": "Verify Python 3.8+ installation",
+          "phase": "Prerequisites Verification",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 507
+        },
+        {
+          "id": "phase_1_task_6",
+          "title": "Verify Helm installation",
+          "phase": "Prerequisites Verification",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 508
+        }
+      ]
+    },
+    {
+      "name": "Infrastructure Setup",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_2_task_1",
+          "title": "Create kind cluster with ingress configuration",
+          "phase": "Infrastructure Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 511
+        },
+        {
+          "id": "phase_2_task_2",
+          "title": "Verify cluster is running and accessible",
+          "phase": "Infrastructure Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 512
+        },
+        {
+          "id": "phase_2_task_3",
+          "title": "Configure kubectl context for new cluster",
+          "phase": "Infrastructure Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 513
+        },
+        {
+          "id": "phase_2_task_4",
+          "title": "Verify nodes are Ready status",
+          "phase": "Infrastructure Setup",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 514
+        }
+      ]
+    },
+    {
+      "name": "Core Components Installation",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_3_task_1",
+          "title": "Create argocd namespace",
+          "phase": "Core Components Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 517
+        },
+        {
+          "id": "phase_3_task_2",
+          "title": "Install ArgoCD manifests",
+          "phase": "Core Components Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 518
+        },
+        {
+          "id": "phase_3_task_3",
+          "title": "Wait for ArgoCD pods to be ready",
+          "phase": "Core Components Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 519
+        },
+        {
+          "id": "phase_3_task_4",
+          "title": "Expose ArgoCD server via port-forward or ingress",
+          "phase": "Core Components Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 520
+        },
+        {
+          "id": "phase_3_task_5",
+          "title": "Retrieve ArgoCD initial admin password",
+          "phase": "Core Components Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 521
+        },
+        {
+          "id": "phase_3_task_6",
+          "title": "Login to ArgoCD UI and CLI",
+          "phase": "Core Components Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 522
+        },
+        {
+          "id": "phase_3_task_7",
+          "title": "Change ArgoCD admin password",
+          "phase": "Core Components Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 523
+        }
+      ]
+    },
+    {
+      "name": "Argo Rollouts Installation",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_4_task_1",
+          "title": "Create argo-rollouts namespace",
+          "phase": "Argo Rollouts Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 526
+        },
+        {
+          "id": "phase_4_task_2",
+          "title": "Install Argo Rollouts controller",
+          "phase": "Argo Rollouts Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 527
+        },
+        {
+          "id": "phase_4_task_3",
+          "title": "Install kubectl argo rollouts plugin",
+          "phase": "Argo Rollouts Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 528
+        },
+        {
+          "id": "phase_4_task_4",
+          "title": "Verify Argo Rollouts installation",
+          "phase": "Argo Rollouts Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 529
+        },
+        {
+          "id": "phase_4_task_5",
+          "title": "Start Argo Rollouts dashboard",
+          "phase": "Argo Rollouts Installation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 530
+        }
+      ]
+    },
+    {
+      "name": "Ingress Setup",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_5_task_1",
+          "title": "Install ingress-nginx controller",
+          "phase": "Ingress Setup",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 533
+        },
+        {
+          "id": "phase_5_task_2",
+          "title": "Wait for ingress controller to be ready",
+          "phase": "Ingress Setup",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 534
+        },
+        {
+          "id": "phase_5_task_3",
+          "title": "Verify ingress class is available",
+          "phase": "Ingress Setup",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 535
+        },
+        {
+          "id": "phase_5_task_4",
+          "title": "Test ingress with sample application",
+          "phase": "Ingress Setup",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 536
+        }
+      ]
+    },
+    {
+      "name": "Monitoring Setup",
+      "priority": "medium",
+      "tasks": [
+        {
+          "id": "phase_6_task_1",
+          "title": "Create monitoring namespace",
+          "phase": "Monitoring Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 539
+        },
+        {
+          "id": "phase_6_task_2",
+          "title": "Add Prometheus Helm repository",
+          "phase": "Monitoring Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 540
+        },
+        {
+          "id": "phase_6_task_3",
+          "title": "Install Prometheus with Helm",
+          "phase": "Monitoring Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 541
+        },
+        {
+          "id": "phase_6_task_4",
+          "title": "Verify Prometheus pods are running",
+          "phase": "Monitoring Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 542
+        },
+        {
+          "id": "phase_6_task_5",
+          "title": "Expose Prometheus via port-forward",
+          "phase": "Monitoring Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 543
+        },
+        {
+          "id": "phase_6_task_6",
+          "title": "Verify Prometheus is scraping metrics",
+          "phase": "Monitoring Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 544
+        }
+      ]
+    },
+    {
+      "name": "Application Deployment",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_7_task_1",
+          "title": "Create application namespaces",
+          "phase": "Application Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 547
+        },
+        {
+          "id": "phase_7_task_2",
+          "title": "Create ArgoCD project for rollouts",
+          "phase": "Application Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 548
+        },
+        {
+          "id": "phase_7_task_3",
+          "title": "Update Git repository URLs in application manifests",
+          "phase": "Application Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 549
+        },
+        {
+          "id": "phase_7_task_4",
+          "title": "Deploy blue-green application via ArgoCD",
+          "phase": "Application Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 550
+        },
+        {
+          "id": "phase_7_task_5",
+          "title": "Deploy canary application via ArgoCD",
+          "phase": "Application Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 551
+        },
+        {
+          "id": "phase_7_task_6",
+          "title": "Wait for ArgoCD to sync applications",
+          "phase": "Application Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 552
+        },
+        {
+          "id": "phase_7_task_7",
+          "title": "Verify all applications are healthy",
+          "phase": "Application Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 553
+        }
+      ]
+    },
+    {
+      "name": "Verification and Testing",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_8_task_1",
+          "title": "Check ArgoCD application status",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 556
+        },
+        {
+          "id": "phase_8_task_2",
+          "title": "Check rollout status for all deployments",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 557
+        },
+        {
+          "id": "phase_8_task_3",
+          "title": "Verify pod status in all namespaces",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 558
+        },
+        {
+          "id": "phase_8_task_4",
+          "title": "Check rollout health via kubectl plugin",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 559
+        },
+        {
+          "id": "phase_8_task_5",
+          "title": "Configure /etc/hosts for local access",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 560
+        },
+        {
+          "id": "phase_8_task_6",
+          "title": "Test blue-green active endpoint",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 561
+        },
+        {
+          "id": "phase_8_task_7",
+          "title": "Test blue-green preview endpoint",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 562
+        },
+        {
+          "id": "phase_8_task_8",
+          "title": "Test canary endpoint",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 563
+        },
+        {
+          "id": "phase_8_task_9",
+          "title": "Verify ingress resources are configured",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 564
+        },
+        {
+          "id": "phase_8_task_10",
+          "title": "Check ingress routing is working",
+          "phase": "Verification and Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 565
+        }
+      ]
+    },
+    {
+      "name": "Task Management Setup",
+      "priority": "medium",
+      "tasks": [
+        {
+          "id": "phase_9_task_1",
+          "title": "Navigate to task-manager directory",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 568
+        },
+        {
+          "id": "phase_9_task_2",
+          "title": "Create Python virtual environment",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 569
+        },
+        {
+          "id": "phase_9_task_3",
+          "title": "Install task-manager dependencies",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 570
+        },
+        {
+          "id": "phase_9_task_4",
+          "title": "Parse PRD to generate tasks.json",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 571
+        },
+        {
+          "id": "phase_9_task_5",
+          "title": "View task progress report",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 572
+        },
+        {
+          "id": "phase_9_task_6",
+          "title": "Navigate to task-master directory",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 573
+        },
+        {
+          "id": "phase_9_task_7",
+          "title": "Create Python virtual environment for task-master",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 574
+        },
+        {
+          "id": "phase_9_task_8",
+          "title": "Install task-master dependencies",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 575
+        },
+        {
+          "id": "phase_9_task_9",
+          "title": "Test task master execution",
+          "phase": "Task Management Setup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 576
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "phase_1_task_1",
+      "title": "Verify Docker installation and version",
+      "phase": "Prerequisites Verification",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 503
+    },
+    {
+      "id": "phase_1_task_2",
+      "title": "Verify kubectl installation and version",
+      "phase": "Prerequisites Verification",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 504
+    },
+    {
+      "id": "phase_1_task_3",
+      "title": "Install kind for local Kubernetes cluster",
+      "phase": "Prerequisites Verification",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 505
+    },
+    {
+      "id": "phase_1_task_4",
+      "title": "Verify Terraform installation",
+      "phase": "Prerequisites Verification",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 506
+    },
+    {
+      "id": "phase_1_task_5",
+      "title": "Verify Python 3.8+ installation",
+      "phase": "Prerequisites Verification",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 507
+    },
+    {
+      "id": "phase_1_task_6",
+      "title": "Verify Helm installation",
+      "phase": "Prerequisites Verification",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 508
+    },
+    {
+      "id": "phase_2_task_1",
+      "title": "Create kind cluster with ingress configuration",
+      "phase": "Infrastructure Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 511
+    },
+    {
+      "id": "phase_2_task_2",
+      "title": "Verify cluster is running and accessible",
+      "phase": "Infrastructure Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 512
+    },
+    {
+      "id": "phase_2_task_3",
+      "title": "Configure kubectl context for new cluster",
+      "phase": "Infrastructure Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 513
+    },
+    {
+      "id": "phase_2_task_4",
+      "title": "Verify nodes are Ready status",
+      "phase": "Infrastructure Setup",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 514
+    },
+    {
+      "id": "phase_3_task_1",
+      "title": "Create argocd namespace",
+      "phase": "Core Components Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 517
+    },
+    {
+      "id": "phase_3_task_2",
+      "title": "Install ArgoCD manifests",
+      "phase": "Core Components Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 518
+    },
+    {
+      "id": "phase_3_task_3",
+      "title": "Wait for ArgoCD pods to be ready",
+      "phase": "Core Components Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 519
+    },
+    {
+      "id": "phase_3_task_4",
+      "title": "Expose ArgoCD server via port-forward or ingress",
+      "phase": "Core Components Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 520
+    },
+    {
+      "id": "phase_3_task_5",
+      "title": "Retrieve ArgoCD initial admin password",
+      "phase": "Core Components Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 521
+    },
+    {
+      "id": "phase_3_task_6",
+      "title": "Login to ArgoCD UI and CLI",
+      "phase": "Core Components Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 522
+    },
+    {
+      "id": "phase_3_task_7",
+      "title": "Change ArgoCD admin password",
+      "phase": "Core Components Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 523
+    },
+    {
+      "id": "phase_4_task_1",
+      "title": "Create argo-rollouts namespace",
+      "phase": "Argo Rollouts Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 526
+    },
+    {
+      "id": "phase_4_task_2",
+      "title": "Install Argo Rollouts controller",
+      "phase": "Argo Rollouts Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 527
+    },
+    {
+      "id": "phase_4_task_3",
+      "title": "Install kubectl argo rollouts plugin",
+      "phase": "Argo Rollouts Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 528
+    },
+    {
+      "id": "phase_4_task_4",
+      "title": "Verify Argo Rollouts installation",
+      "phase": "Argo Rollouts Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 529
+    },
+    {
+      "id": "phase_4_task_5",
+      "title": "Start Argo Rollouts dashboard",
+      "phase": "Argo Rollouts Installation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 530
+    },
+    {
+      "id": "phase_5_task_1",
+      "title": "Install ingress-nginx controller",
+      "phase": "Ingress Setup",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 533
+    },
+    {
+      "id": "phase_5_task_2",
+      "title": "Wait for ingress controller to be ready",
+      "phase": "Ingress Setup",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 534
+    },
+    {
+      "id": "phase_5_task_3",
+      "title": "Verify ingress class is available",
+      "phase": "Ingress Setup",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 535
+    },
+    {
+      "id": "phase_5_task_4",
+      "title": "Test ingress with sample application",
+      "phase": "Ingress Setup",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 536
+    },
+    {
+      "id": "phase_6_task_1",
+      "title": "Create monitoring namespace",
+      "phase": "Monitoring Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 539
+    },
+    {
+      "id": "phase_6_task_2",
+      "title": "Add Prometheus Helm repository",
+      "phase": "Monitoring Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 540
+    },
+    {
+      "id": "phase_6_task_3",
+      "title": "Install Prometheus with Helm",
+      "phase": "Monitoring Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 541
+    },
+    {
+      "id": "phase_6_task_4",
+      "title": "Verify Prometheus pods are running",
+      "phase": "Monitoring Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 542
+    },
+    {
+      "id": "phase_6_task_5",
+      "title": "Expose Prometheus via port-forward",
+      "phase": "Monitoring Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 543
+    },
+    {
+      "id": "phase_6_task_6",
+      "title": "Verify Prometheus is scraping metrics",
+      "phase": "Monitoring Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 544
+    },
+    {
+      "id": "phase_7_task_1",
+      "title": "Create application namespaces",
+      "phase": "Application Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 547
+    },
+    {
+      "id": "phase_7_task_2",
+      "title": "Create ArgoCD project for rollouts",
+      "phase": "Application Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 548
+    },
+    {
+      "id": "phase_7_task_3",
+      "title": "Update Git repository URLs in application manifests",
+      "phase": "Application Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 549
+    },
+    {
+      "id": "phase_7_task_4",
+      "title": "Deploy blue-green application via ArgoCD",
+      "phase": "Application Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 550
+    },
+    {
+      "id": "phase_7_task_5",
+      "title": "Deploy canary application via ArgoCD",
+      "phase": "Application Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 551
+    },
+    {
+      "id": "phase_7_task_6",
+      "title": "Wait for ArgoCD to sync applications",
+      "phase": "Application Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 552
+    },
+    {
+      "id": "phase_7_task_7",
+      "title": "Verify all applications are healthy",
+      "phase": "Application Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 553
+    },
+    {
+      "id": "phase_8_task_1",
+      "title": "Check ArgoCD application status",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 556
+    },
+    {
+      "id": "phase_8_task_2",
+      "title": "Check rollout status for all deployments",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 557
+    },
+    {
+      "id": "phase_8_task_3",
+      "title": "Verify pod status in all namespaces",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 558
+    },
+    {
+      "id": "phase_8_task_4",
+      "title": "Check rollout health via kubectl plugin",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 559
+    },
+    {
+      "id": "phase_8_task_5",
+      "title": "Configure /etc/hosts for local access",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 560
+    },
+    {
+      "id": "phase_8_task_6",
+      "title": "Test blue-green active endpoint",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 561
+    },
+    {
+      "id": "phase_8_task_7",
+      "title": "Test blue-green preview endpoint",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 562
+    },
+    {
+      "id": "phase_8_task_8",
+      "title": "Test canary endpoint",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 563
+    },
+    {
+      "id": "phase_8_task_9",
+      "title": "Verify ingress resources are configured",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 564
+    },
+    {
+      "id": "phase_8_task_10",
+      "title": "Check ingress routing is working",
+      "phase": "Verification and Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 565
+    },
+    {
+      "id": "phase_9_task_1",
+      "title": "Navigate to task-manager directory",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 568
+    },
+    {
+      "id": "phase_9_task_2",
+      "title": "Create Python virtual environment",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 569
+    },
+    {
+      "id": "phase_9_task_3",
+      "title": "Install task-manager dependencies",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 570
+    },
+    {
+      "id": "phase_9_task_4",
+      "title": "Parse PRD to generate tasks.json",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 571
+    },
+    {
+      "id": "phase_9_task_5",
+      "title": "View task progress report",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 572
+    },
+    {
+      "id": "phase_9_task_6",
+      "title": "Navigate to task-master directory",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 573
+    },
+    {
+      "id": "phase_9_task_7",
+      "title": "Create Python virtual environment for task-master",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 574
+    },
+    {
+      "id": "phase_9_task_8",
+      "title": "Install task-master dependencies",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 575
+    },
+    {
+      "id": "phase_9_task_9",
+      "title": "Test task master execution",
+      "phase": "Task Management Setup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 576
+    }
+  ]
+}

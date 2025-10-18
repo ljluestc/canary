@@ -1,0 +1,1620 @@
+{
+  "metadata": {
+    "title": "PRD: Blue-Green Deployment Guide",
+    "sections": [
+      "## 1. Executive Summary",
+      "## 2. Blue-Green Deployment Strategy",
+      "## 3. Implementation Guide",
+      "## 4. Deployment Workflow",
+      "## 5. Operational Commands",
+      "## 6. Implementation Phases",
+      "## 7. Best Practices",
+      "## 8. Troubleshooting",
+      "## 9. Metrics and Monitoring",
+      "## 10. References",
+      "## 11. Appendix"
+    ],
+    "total_tasks": 73,
+    "total_phases": 11
+  },
+  "phases": [
+    {
+      "name": "Preparation",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_1_task_1",
+          "title": "Review current deployment strategy",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 259
+        },
+        {
+          "id": "phase_1_task_2",
+          "title": "Identify applications for blue-green deployment",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 260
+        },
+        {
+          "id": "phase_1_task_3",
+          "title": "Assess resource requirements (2x capacity during rollout)",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 261
+        },
+        {
+          "id": "phase_1_task_4",
+          "title": "Plan rollback procedures",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 262
+        },
+        {
+          "id": "phase_1_task_5",
+          "title": "Create deployment checklist",
+          "phase": "Preparation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 1",
+          "line_number": 263
+        }
+      ]
+    },
+    {
+      "name": "Manifest Creation",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_2_task_1",
+          "title": "Create rollout manifest with blue-green strategy",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 266
+        },
+        {
+          "id": "phase_2_task_2",
+          "title": "Define active and preview services",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 267
+        },
+        {
+          "id": "phase_2_task_3",
+          "title": "Configure ingress for both environments",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 268
+        },
+        {
+          "id": "phase_2_task_4",
+          "title": "Set appropriate replica counts",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 269
+        },
+        {
+          "id": "phase_2_task_5",
+          "title": "Configure health checks",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 270
+        },
+        {
+          "id": "phase_2_task_6",
+          "title": "Set resource limits and requests",
+          "phase": "Manifest Creation",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 2",
+          "line_number": 271
+        }
+      ]
+    },
+    {
+      "name": "Initial Deployment",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_3_task_1",
+          "title": "Apply namespace if not exists",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 274
+        },
+        {
+          "id": "phase_3_task_2",
+          "title": "Deploy rollout manifest",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 275
+        },
+        {
+          "id": "phase_3_task_3",
+          "title": "Wait for pods to be ready",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 276
+        },
+        {
+          "id": "phase_3_task_4",
+          "title": "Verify active service endpoints",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 277
+        },
+        {
+          "id": "phase_3_task_5",
+          "title": "Test production URL access",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 278
+        },
+        {
+          "id": "phase_3_task_6",
+          "title": "Verify health check endpoints",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 279
+        },
+        {
+          "id": "phase_3_task_7",
+          "title": "Check application functionality",
+          "phase": "Initial Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 3",
+          "line_number": 280
+        }
+      ]
+    },
+    {
+      "name": "First Update Deployment",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_4_task_1",
+          "title": "Update container image to new version",
+          "phase": "First Update Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 283
+        },
+        {
+          "id": "phase_4_task_2",
+          "title": "Commit changes to Git",
+          "phase": "First Update Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 284
+        },
+        {
+          "id": "phase_4_task_3",
+          "title": "Wait for ArgoCD to sync",
+          "phase": "First Update Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 285
+        },
+        {
+          "id": "phase_4_task_4",
+          "title": "Verify new ReplicaSet created",
+          "phase": "First Update Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 286
+        },
+        {
+          "id": "phase_4_task_5",
+          "title": "Check preview pods are running",
+          "phase": "First Update Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 287
+        },
+        {
+          "id": "phase_4_task_6",
+          "title": "Verify preview service endpoints",
+          "phase": "First Update Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 288
+        },
+        {
+          "id": "phase_4_task_7",
+          "title": "Test preview URL access",
+          "phase": "First Update Deployment",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 4",
+          "line_number": 289
+        }
+      ]
+    },
+    {
+      "name": "Preview Testing",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_5_task_1",
+          "title": "Access preview environment",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 292
+        },
+        {
+          "id": "phase_5_task_2",
+          "title": "Run smoke tests on preview",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 293
+        },
+        {
+          "id": "phase_5_task_3",
+          "title": "Execute integration test suite",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 294
+        },
+        {
+          "id": "phase_5_task_4",
+          "title": "Perform manual QA testing",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 295
+        },
+        {
+          "id": "phase_5_task_5",
+          "title": "Check application logs for errors",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 296
+        },
+        {
+          "id": "phase_5_task_6",
+          "title": "Monitor preview metrics",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 297
+        },
+        {
+          "id": "phase_5_task_7",
+          "title": "Validate database migrations if any",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 298
+        },
+        {
+          "id": "phase_5_task_8",
+          "title": "Test critical user journeys",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 299
+        },
+        {
+          "id": "phase_5_task_9",
+          "title": "Review performance metrics",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 300
+        },
+        {
+          "id": "phase_5_task_10",
+          "title": "Get stakeholder approval",
+          "phase": "Preview Testing",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 5",
+          "line_number": 301
+        }
+      ]
+    },
+    {
+      "name": "Promotion",
+      "priority": "critical",
+      "tasks": [
+        {
+          "id": "phase_6_task_1",
+          "title": "Execute promotion command",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 304
+        },
+        {
+          "id": "phase_6_task_2",
+          "title": "Monitor active service update",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 305
+        },
+        {
+          "id": "phase_6_task_3",
+          "title": "Verify traffic switch to new pods",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 306
+        },
+        {
+          "id": "phase_6_task_4",
+          "title": "Check production URL serves new version",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 307
+        },
+        {
+          "id": "phase_6_task_5",
+          "title": "Monitor error rates in production",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 308
+        },
+        {
+          "id": "phase_6_task_6",
+          "title": "Watch application logs",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 309
+        },
+        {
+          "id": "phase_6_task_7",
+          "title": "Verify all health checks passing",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 310
+        },
+        {
+          "id": "phase_6_task_8",
+          "title": "Monitor database connections",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 311
+        },
+        {
+          "id": "phase_6_task_9",
+          "title": "Check external integrations working",
+          "phase": "Promotion",
+          "priority": "critical",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 6",
+          "line_number": 312
+        }
+      ]
+    },
+    {
+      "name": "Post-Deployment Validation",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_7_task_1",
+          "title": "Run production smoke tests",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 315
+        },
+        {
+          "id": "phase_7_task_2",
+          "title": "Execute synthetic monitoring tests",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 316
+        },
+        {
+          "id": "phase_7_task_3",
+          "title": "Verify all endpoints responding",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 317
+        },
+        {
+          "id": "phase_7_task_4",
+          "title": "Check application metrics",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 318
+        },
+        {
+          "id": "phase_7_task_5",
+          "title": "Monitor error logs",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 319
+        },
+        {
+          "id": "phase_7_task_6",
+          "title": "Validate user reports",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 320
+        },
+        {
+          "id": "phase_7_task_7",
+          "title": "Review performance dashboards",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 321
+        },
+        {
+          "id": "phase_7_task_8",
+          "title": "Confirm database query performance",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 322
+        },
+        {
+          "id": "phase_7_task_9",
+          "title": "Check cache hit rates",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 323
+        },
+        {
+          "id": "phase_7_task_10",
+          "title": "Verify CDN invalidation if needed",
+          "phase": "Post-Deployment Validation",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 7",
+          "line_number": 324
+        }
+      ]
+    },
+    {
+      "name": "Cleanup",
+      "priority": "medium",
+      "tasks": [
+        {
+          "id": "phase_8_task_1",
+          "title": "Wait for scale-down delay to complete",
+          "phase": "Cleanup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 327
+        },
+        {
+          "id": "phase_8_task_2",
+          "title": "Verify old pods scaled down",
+          "phase": "Cleanup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 328
+        },
+        {
+          "id": "phase_8_task_3",
+          "title": "Check only new ReplicaSet is running",
+          "phase": "Cleanup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 329
+        },
+        {
+          "id": "phase_8_task_4",
+          "title": "Clean up old container images",
+          "phase": "Cleanup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 330
+        },
+        {
+          "id": "phase_8_task_5",
+          "title": "Update documentation",
+          "phase": "Cleanup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 331
+        },
+        {
+          "id": "phase_8_task_6",
+          "title": "Archive rollout logs",
+          "phase": "Cleanup",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 8",
+          "line_number": 332
+        }
+      ]
+    },
+    {
+      "name": "Rollback Testing",
+      "priority": "high",
+      "tasks": [
+        {
+          "id": "phase_9_task_1",
+          "title": "Document rollback procedure",
+          "phase": "Rollback Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 335
+        },
+        {
+          "id": "phase_9_task_2",
+          "title": "Test rollback in non-prod environment",
+          "phase": "Rollback Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 336
+        },
+        {
+          "id": "phase_9_task_3",
+          "title": "Time rollback duration",
+          "phase": "Rollback Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 337
+        },
+        {
+          "id": "phase_9_task_4",
+          "title": "Verify rollback completes successfully",
+          "phase": "Rollback Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 338
+        },
+        {
+          "id": "phase_9_task_5",
+          "title": "Practice rollback with team",
+          "phase": "Rollback Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 339
+        },
+        {
+          "id": "phase_9_task_6",
+          "title": "Create rollback runbook",
+          "phase": "Rollback Testing",
+          "priority": "high",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 9",
+          "line_number": 340
+        }
+      ]
+    },
+    {
+      "name": "Automation",
+      "priority": "medium",
+      "tasks": [
+        {
+          "id": "phase_10_task_1",
+          "title": "Create deployment scripts",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 343
+        },
+        {
+          "id": "phase_10_task_2",
+          "title": "Automate preview testing",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 344
+        },
+        {
+          "id": "phase_10_task_3",
+          "title": "Set up automated health checks",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 345
+        },
+        {
+          "id": "phase_10_task_4",
+          "title": "Configure monitoring alerts",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 346
+        },
+        {
+          "id": "phase_10_task_5",
+          "title": "Create promotion approval workflow",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 347
+        },
+        {
+          "id": "phase_10_task_6",
+          "title": "Set up deployment notifications",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 348
+        },
+        {
+          "id": "phase_10_task_7",
+          "title": "Integrate with CI/CD pipeline",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 349
+        }
+      ]
+    },
+    {
+      "name": "Automation",
+      "priority": "medium",
+      "tasks": [
+        {
+          "id": "phase_10_task_1",
+          "title": "Create deployment scripts",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 343
+        },
+        {
+          "id": "phase_10_task_2",
+          "title": "Automate preview testing",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 344
+        },
+        {
+          "id": "phase_10_task_3",
+          "title": "Set up automated health checks",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 345
+        },
+        {
+          "id": "phase_10_task_4",
+          "title": "Configure monitoring alerts",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 346
+        },
+        {
+          "id": "phase_10_task_5",
+          "title": "Create promotion approval workflow",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 347
+        },
+        {
+          "id": "phase_10_task_6",
+          "title": "Set up deployment notifications",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 348
+        },
+        {
+          "id": "phase_10_task_7",
+          "title": "Integrate with CI/CD pipeline",
+          "phase": "Automation",
+          "priority": "medium",
+          "status": "pending",
+          "dependencies": [],
+          "section": "Phase 10",
+          "line_number": 349
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "phase_1_task_1",
+      "title": "Review current deployment strategy",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 259
+    },
+    {
+      "id": "phase_1_task_2",
+      "title": "Identify applications for blue-green deployment",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 260
+    },
+    {
+      "id": "phase_1_task_3",
+      "title": "Assess resource requirements (2x capacity during rollout)",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 261
+    },
+    {
+      "id": "phase_1_task_4",
+      "title": "Plan rollback procedures",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 262
+    },
+    {
+      "id": "phase_1_task_5",
+      "title": "Create deployment checklist",
+      "phase": "Preparation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 1",
+      "line_number": 263
+    },
+    {
+      "id": "phase_2_task_1",
+      "title": "Create rollout manifest with blue-green strategy",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 266
+    },
+    {
+      "id": "phase_2_task_2",
+      "title": "Define active and preview services",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 267
+    },
+    {
+      "id": "phase_2_task_3",
+      "title": "Configure ingress for both environments",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 268
+    },
+    {
+      "id": "phase_2_task_4",
+      "title": "Set appropriate replica counts",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 269
+    },
+    {
+      "id": "phase_2_task_5",
+      "title": "Configure health checks",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 270
+    },
+    {
+      "id": "phase_2_task_6",
+      "title": "Set resource limits and requests",
+      "phase": "Manifest Creation",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 2",
+      "line_number": 271
+    },
+    {
+      "id": "phase_3_task_1",
+      "title": "Apply namespace if not exists",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 274
+    },
+    {
+      "id": "phase_3_task_2",
+      "title": "Deploy rollout manifest",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 275
+    },
+    {
+      "id": "phase_3_task_3",
+      "title": "Wait for pods to be ready",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 276
+    },
+    {
+      "id": "phase_3_task_4",
+      "title": "Verify active service endpoints",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 277
+    },
+    {
+      "id": "phase_3_task_5",
+      "title": "Test production URL access",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 278
+    },
+    {
+      "id": "phase_3_task_6",
+      "title": "Verify health check endpoints",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 279
+    },
+    {
+      "id": "phase_3_task_7",
+      "title": "Check application functionality",
+      "phase": "Initial Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 3",
+      "line_number": 280
+    },
+    {
+      "id": "phase_4_task_1",
+      "title": "Update container image to new version",
+      "phase": "First Update Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 283
+    },
+    {
+      "id": "phase_4_task_2",
+      "title": "Commit changes to Git",
+      "phase": "First Update Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 284
+    },
+    {
+      "id": "phase_4_task_3",
+      "title": "Wait for ArgoCD to sync",
+      "phase": "First Update Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 285
+    },
+    {
+      "id": "phase_4_task_4",
+      "title": "Verify new ReplicaSet created",
+      "phase": "First Update Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 286
+    },
+    {
+      "id": "phase_4_task_5",
+      "title": "Check preview pods are running",
+      "phase": "First Update Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 287
+    },
+    {
+      "id": "phase_4_task_6",
+      "title": "Verify preview service endpoints",
+      "phase": "First Update Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 288
+    },
+    {
+      "id": "phase_4_task_7",
+      "title": "Test preview URL access",
+      "phase": "First Update Deployment",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 4",
+      "line_number": 289
+    },
+    {
+      "id": "phase_5_task_1",
+      "title": "Access preview environment",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 292
+    },
+    {
+      "id": "phase_5_task_2",
+      "title": "Run smoke tests on preview",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 293
+    },
+    {
+      "id": "phase_5_task_3",
+      "title": "Execute integration test suite",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 294
+    },
+    {
+      "id": "phase_5_task_4",
+      "title": "Perform manual QA testing",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 295
+    },
+    {
+      "id": "phase_5_task_5",
+      "title": "Check application logs for errors",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 296
+    },
+    {
+      "id": "phase_5_task_6",
+      "title": "Monitor preview metrics",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 297
+    },
+    {
+      "id": "phase_5_task_7",
+      "title": "Validate database migrations if any",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 298
+    },
+    {
+      "id": "phase_5_task_8",
+      "title": "Test critical user journeys",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 299
+    },
+    {
+      "id": "phase_5_task_9",
+      "title": "Review performance metrics",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 300
+    },
+    {
+      "id": "phase_5_task_10",
+      "title": "Get stakeholder approval",
+      "phase": "Preview Testing",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 5",
+      "line_number": 301
+    },
+    {
+      "id": "phase_6_task_1",
+      "title": "Execute promotion command",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 304
+    },
+    {
+      "id": "phase_6_task_2",
+      "title": "Monitor active service update",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 305
+    },
+    {
+      "id": "phase_6_task_3",
+      "title": "Verify traffic switch to new pods",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 306
+    },
+    {
+      "id": "phase_6_task_4",
+      "title": "Check production URL serves new version",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 307
+    },
+    {
+      "id": "phase_6_task_5",
+      "title": "Monitor error rates in production",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 308
+    },
+    {
+      "id": "phase_6_task_6",
+      "title": "Watch application logs",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 309
+    },
+    {
+      "id": "phase_6_task_7",
+      "title": "Verify all health checks passing",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 310
+    },
+    {
+      "id": "phase_6_task_8",
+      "title": "Monitor database connections",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 311
+    },
+    {
+      "id": "phase_6_task_9",
+      "title": "Check external integrations working",
+      "phase": "Promotion",
+      "priority": "critical",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 6",
+      "line_number": 312
+    },
+    {
+      "id": "phase_7_task_1",
+      "title": "Run production smoke tests",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 315
+    },
+    {
+      "id": "phase_7_task_2",
+      "title": "Execute synthetic monitoring tests",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 316
+    },
+    {
+      "id": "phase_7_task_3",
+      "title": "Verify all endpoints responding",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 317
+    },
+    {
+      "id": "phase_7_task_4",
+      "title": "Check application metrics",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 318
+    },
+    {
+      "id": "phase_7_task_5",
+      "title": "Monitor error logs",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 319
+    },
+    {
+      "id": "phase_7_task_6",
+      "title": "Validate user reports",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 320
+    },
+    {
+      "id": "phase_7_task_7",
+      "title": "Review performance dashboards",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 321
+    },
+    {
+      "id": "phase_7_task_8",
+      "title": "Confirm database query performance",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 322
+    },
+    {
+      "id": "phase_7_task_9",
+      "title": "Check cache hit rates",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 323
+    },
+    {
+      "id": "phase_7_task_10",
+      "title": "Verify CDN invalidation if needed",
+      "phase": "Post-Deployment Validation",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 7",
+      "line_number": 324
+    },
+    {
+      "id": "phase_8_task_1",
+      "title": "Wait for scale-down delay to complete",
+      "phase": "Cleanup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 327
+    },
+    {
+      "id": "phase_8_task_2",
+      "title": "Verify old pods scaled down",
+      "phase": "Cleanup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 328
+    },
+    {
+      "id": "phase_8_task_3",
+      "title": "Check only new ReplicaSet is running",
+      "phase": "Cleanup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 329
+    },
+    {
+      "id": "phase_8_task_4",
+      "title": "Clean up old container images",
+      "phase": "Cleanup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 330
+    },
+    {
+      "id": "phase_8_task_5",
+      "title": "Update documentation",
+      "phase": "Cleanup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 331
+    },
+    {
+      "id": "phase_8_task_6",
+      "title": "Archive rollout logs",
+      "phase": "Cleanup",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 8",
+      "line_number": 332
+    },
+    {
+      "id": "phase_9_task_1",
+      "title": "Document rollback procedure",
+      "phase": "Rollback Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 335
+    },
+    {
+      "id": "phase_9_task_2",
+      "title": "Test rollback in non-prod environment",
+      "phase": "Rollback Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 336
+    },
+    {
+      "id": "phase_9_task_3",
+      "title": "Time rollback duration",
+      "phase": "Rollback Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 337
+    },
+    {
+      "id": "phase_9_task_4",
+      "title": "Verify rollback completes successfully",
+      "phase": "Rollback Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 338
+    },
+    {
+      "id": "phase_9_task_5",
+      "title": "Practice rollback with team",
+      "phase": "Rollback Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 339
+    },
+    {
+      "id": "phase_9_task_6",
+      "title": "Create rollback runbook",
+      "phase": "Rollback Testing",
+      "priority": "high",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 9",
+      "line_number": 340
+    },
+    {
+      "id": "phase_10_task_1",
+      "title": "Create deployment scripts",
+      "phase": "Automation",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 343
+    },
+    {
+      "id": "phase_10_task_2",
+      "title": "Automate preview testing",
+      "phase": "Automation",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 344
+    },
+    {
+      "id": "phase_10_task_3",
+      "title": "Set up automated health checks",
+      "phase": "Automation",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 345
+    },
+    {
+      "id": "phase_10_task_4",
+      "title": "Configure monitoring alerts",
+      "phase": "Automation",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 346
+    },
+    {
+      "id": "phase_10_task_5",
+      "title": "Create promotion approval workflow",
+      "phase": "Automation",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 347
+    },
+    {
+      "id": "phase_10_task_6",
+      "title": "Set up deployment notifications",
+      "phase": "Automation",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 348
+    },
+    {
+      "id": "phase_10_task_7",
+      "title": "Integrate with CI/CD pipeline",
+      "phase": "Automation",
+      "priority": "medium",
+      "status": "pending",
+      "dependencies": [],
+      "section": "Phase 10",
+      "line_number": 349
+    }
+  ]
+}

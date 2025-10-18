@@ -1,0 +1,11 @@
+# Task ID: feature_task_42
+# Title: Manual promotion of new version
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 
+# Details:
+
+
+# Test Strategy:
+

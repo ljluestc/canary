@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rollouts-project
+  namespace: argocd
+  labels:
+    project: rollouts
+spec:
+  description: Project for Blue-Green and Canary deployments with Argo Rollouts
+
+  # Allow manifests to deploy to specific namespaces
+  destinations:
+  - namespace: 'blue-green'
+    server: https://kubernetes.default.svc
+  - namespace: 'canary'
+    server: https://kubernetes.default.svc
+  - namespace: 'canary-blue-green'
+    server: https://kubernetes.default.svc
+  - namespace: 'canary-canary'
+    server: https://kubernetes.default.svc
+  - namespace: 'monitoring'
+    server: https://kubernetes.default.svc
+
+  # Allow all repositories (in production, you'd want to restrict this)
+  sourceRepos:
+  - '*'
+
+  # Cluster resource whitelist (allows all)
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+
+  # Namespace resource whitelist (allows all in designated namespaces)
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
+
+  # Roles for project members
+  roles:
+  - name: admin
+    description: Admin privileges for rollouts project
+    policies:
+    - p, proj:rollouts-project:admin, applications, *, rollouts-project/*, allow
+    - p, proj:rollouts-project:admin, repositories, *, rollouts-project/*, allow
+    groups:
+    - admins
+
+  - name: developer
+    description: Developer privileges for rollouts project
+    policies:
+    - p, proj:rollouts-project:developer, applications, get, rollouts-project/*, allow
+    - p, proj:rollouts-project:developer, applications, sync, rollouts-project/*, allow
+    groups:
+    - developers

@@ -1,0 +1,5 @@
+flask>=2.0.0
+prometheus-client>=0.12.0
+psutil>=5.8.0
+requests>=2.25.0
+pyyaml>=6.0
