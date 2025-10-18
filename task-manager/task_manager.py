@@ -35,6 +35,114 @@ class TaskManager:
 
         if tasks_file and Path(tasks_file).exists():
             self.load_tasks(tasks_file)
+    
+    def add_task(self, task: Task) -> None:
+        """
+        Add a task to the task manager.
+        
+        Args:
+            task: Task object to add
+            
+        Raises:
+            ValueError: If a task with the same ID already exists
+        """
+        task_dict = task.to_dict()
+        # Check for duplicate task ID
+        if any(t['id'] == task_dict['id'] for t in self.tasks):
+            raise ValueError(f"Task with ID '{task_dict['id']}' already exists")
+        self.tasks.append(task_dict)
+    
+    def get_tasks_by_priority(self, priority: str) -> List[Dict[str, Any]]:
+        """
+        Get tasks by priority.
+        
+        Args:
+            priority: Priority level to filter by
+            
+        Returns:
+            List of tasks with the specified priority
+        """
+        return [task for task in self.tasks if task.get('priority') == priority]
+    
+    def get_tasks_by_status(self, status: str) -> List[Dict[str, Any]]:
+        """
+        Get tasks by status.
+        
+        Args:
+            status: Status to filter by
+            
+        Returns:
+            List of tasks with the specified status
+        """
+        return [task for task in self.tasks if task.get('status') == status]
+    
+    def add_dependency(self, task_id: str, dependency_id: str) -> None:
+        """
+        Add a dependency to a task.
+        
+        Args:
+            task_id: ID of the task to add dependency to
+            dependency_id: ID of the dependency task
+            
+        Raises:
+            ValueError: If adding the dependency would create a circular dependency
+        """
+        task = self.get_task(task_id)
+        if not task:
+            raise KeyError(f"Task not found: {task_id}")
+        
+        # Check for circular dependency
+        dep_task = self.get_task(dependency_id)
+        if dep_task:
+            # Check if dependency_id already depends on task_id (immediate circular dependency)
+            if task_id in dep_task.get('dependencies', []):
+                raise ValueError(f"Circular dependency detected: {task_id} <-> {dependency_id}")
+        
+        if 'dependencies' not in task:
+            task['dependencies'] = []
+        if dependency_id not in task['dependencies']:
+            task['dependencies'].append(dependency_id)
+    
+    def get_progress_report(self) -> Dict[str, Any]:
+        """
+        Get a progress report for all tasks.
+        
+        Returns:
+            Dictionary containing progress metrics
+        """
+        total = len(self.tasks)
+        if total == 0:
+            return {
+                'total': 0,
+                'completed': 0,
+                'in_progress': 0,
+                'pending': 0,
+                'failed': 0,
+                'completion_rate': 0.0
+            }
+        
+        completed = len([t for t in self.tasks if t.get('status') == 'completed'])
+        in_progress = len([t for t in self.tasks if t.get('status') == 'in_progress'])
+        pending = len([t for t in self.tasks if t.get('status') == 'pending'])
+        failed = len([t for t in self.tasks if t.get('status') == 'failed'])
+        
+        return {
+            'total': total,
+            'completed': completed,
+            'in_progress': in_progress,
+            'pending': pending,
+            'failed': failed,
+            'completion_rate': (completed / total) * 100 if total > 0 else 0.0
+        }
+    
+    def get_all_tasks(self) -> List[Dict[str, Any]]:
+        """
+        Get all tasks.
+        
+        Returns:
+            List of all tasks
+        """
+        return self.tasks
 
     def load_from_prd(self, prd_file: str) -> None:
         """
@@ -160,18 +268,20 @@ class TaskManager:
             message: Optional status message
 
         Returns:
-            True if successful, False otherwise
+            True if successful
+            
+        Raises:
+            KeyError: If task with given ID is not found
+            ValueError: If status is invalid
         """
         task = self.get_task(task_id)
         if not task:
-            print(f"Task not found: {task_id}")
-            return False
+            raise KeyError(f"Task not found: {task_id}")
 
         # Validate status
         valid_statuses = [s.value for s in TaskStatus]
         if status not in valid_statuses:
-            print(f"Invalid status: {status}. Must be one of: {valid_statuses}")
-            return False
+            raise ValueError(f"Invalid status: {status}. Must be one of: {valid_statuses}")
 
         task['status'] = status
 
