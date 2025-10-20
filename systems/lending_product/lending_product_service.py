@@ -57,6 +57,14 @@ class RiskLevel(Enum):
     HIGH = "high"
     VERY_HIGH = "very_high"
 
+class RepaymentScheduleStatus(Enum):
+    """Repayment schedule status enumeration."""
+    SCHEDULED = "scheduled"
+    PAID = "paid"
+    PARTIALLY_PAID = "partially_paid"
+    OVERDUE = "overdue"
+    WAIVED = "waived"
+
 @dataclass
 class Customer:
     """Customer model."""
@@ -164,6 +172,25 @@ class CreditReport:
     inquiries: List[Dict[str, Any]] = field(default_factory=list)
     public_records: List[Dict[str, Any]] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
+
+@dataclass
+class RepaymentSchedule:
+    """Repayment schedule model for loan amortization."""
+    schedule_id: str
+    loan_id: str
+    customer_id: str
+    installment_number: int
+    due_date: datetime
+    principal_amount: float
+    interest_amount: float
+    total_payment: float
+    remaining_balance: float
+    status: RepaymentScheduleStatus = RepaymentScheduleStatus.SCHEDULED
+    paid_amount: float = 0.0
+    paid_date: Optional[datetime] = None
+    payment_id: Optional[str] = None
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
 
 class LendingProductDatabase:
     """Database operations for lending product service."""
@@ -304,7 +331,47 @@ class LendingProductDatabase:
                 FOREIGN KEY (customer_id) REFERENCES customers (customer_id)
             )
         ''')
-        
+
+        # Repayment schedules table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS repayment_schedules (
+                schedule_id TEXT PRIMARY KEY,
+                loan_id TEXT NOT NULL,
+                customer_id TEXT NOT NULL,
+                installment_number INTEGER NOT NULL,
+                due_date TIMESTAMP NOT NULL,
+                principal_amount REAL NOT NULL,
+                interest_amount REAL NOT NULL,
+                total_payment REAL NOT NULL,
+                remaining_balance REAL NOT NULL,
+                status TEXT DEFAULT 'scheduled',
+                paid_amount REAL DEFAULT 0.0,
+                paid_date TIMESTAMP,
+                payment_id TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (loan_id) REFERENCES loans (loan_id),
+                FOREIGN KEY (customer_id) REFERENCES customers (customer_id),
+                FOREIGN KEY (payment_id) REFERENCES payments (payment_id)
+            )
+        ''')
+
+        # Create index for efficient queries
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_repayment_schedules_loan_id
+            ON repayment_schedules(loan_id)
+        ''')
+
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_repayment_schedules_due_date
+            ON repayment_schedules(due_date)
+        ''')
+
+        cursor.execute('''
+            CREATE INDEX IF NOT EXISTS idx_repayment_schedules_status
+            ON repayment_schedules(status)
+        ''')
+
         conn.commit()
         conn.close()
     
@@ -646,13 +713,13 @@ class LendingProductDatabase:
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute('''
-                SELECT * FROM payments 
-                WHERE loan_id = ? 
+                SELECT * FROM payments
+                WHERE loan_id = ?
                 ORDER BY payment_date DESC
             ''', (loan_id,))
-            
+
             payments = []
             for row in cursor.fetchall():
                 payment = Payment(
@@ -667,11 +734,169 @@ class LendingProductDatabase:
                     created_at=datetime.fromisoformat(row[8]) if row[8] else datetime.now()
                 )
                 payments.append(payment)
-            
+
             conn.close()
             return payments
         except Exception as e:
             logger.error(f"Error getting loan payments: {e}")
+            return []
+
+    def save_repayment_schedule(self, schedule: RepaymentSchedule) -> bool:
+        """Save repayment schedule to database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute('''
+                INSERT OR REPLACE INTO repayment_schedules
+                (schedule_id, loan_id, customer_id, installment_number, due_date,
+                 principal_amount, interest_amount, total_payment, remaining_balance,
+                 status, paid_amount, paid_date, payment_id, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                schedule.schedule_id, schedule.loan_id, schedule.customer_id,
+                schedule.installment_number, schedule.due_date, schedule.principal_amount,
+                schedule.interest_amount, schedule.total_payment, schedule.remaining_balance,
+                schedule.status.value, schedule.paid_amount, schedule.paid_date,
+                schedule.payment_id, schedule.created_at, schedule.updated_at
+            ))
+
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            logger.error(f"Error saving repayment schedule: {e}")
+            return False
+
+    def get_loan_repayment_schedule(self, loan_id: str) -> List[RepaymentSchedule]:
+        """Get repayment schedule for a loan."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute('''
+                SELECT * FROM repayment_schedules
+                WHERE loan_id = ?
+                ORDER BY installment_number ASC
+            ''', (loan_id,))
+
+            schedules = []
+            for row in cursor.fetchall():
+                schedule = RepaymentSchedule(
+                    schedule_id=row[0],
+                    loan_id=row[1],
+                    customer_id=row[2],
+                    installment_number=row[3],
+                    due_date=datetime.fromisoformat(row[4]) if row[4] else datetime.now(),
+                    principal_amount=row[5],
+                    interest_amount=row[6],
+                    total_payment=row[7],
+                    remaining_balance=row[8],
+                    status=RepaymentScheduleStatus(row[9]),
+                    paid_amount=row[10] or 0.0,
+                    paid_date=datetime.fromisoformat(row[11]) if row[11] else None,
+                    payment_id=row[12],
+                    created_at=datetime.fromisoformat(row[13]) if row[13] else datetime.now(),
+                    updated_at=datetime.fromisoformat(row[14]) if row[14] else datetime.now()
+                )
+                schedules.append(schedule)
+
+            conn.close()
+            return schedules
+        except Exception as e:
+            logger.error(f"Error getting repayment schedule: {e}")
+            return []
+
+    def get_upcoming_payments(self, customer_id: str, days_ahead: int = 30) -> List[RepaymentSchedule]:
+        """Get upcoming payments for a customer within specified days."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            future_date = datetime.now() + timedelta(days=days_ahead)
+
+            cursor.execute('''
+                SELECT * FROM repayment_schedules
+                WHERE customer_id = ?
+                  AND status = 'scheduled'
+                  AND due_date <= ?
+                ORDER BY due_date ASC
+            ''', (customer_id, future_date))
+
+            schedules = []
+            for row in cursor.fetchall():
+                schedule = RepaymentSchedule(
+                    schedule_id=row[0],
+                    loan_id=row[1],
+                    customer_id=row[2],
+                    installment_number=row[3],
+                    due_date=datetime.fromisoformat(row[4]) if row[4] else datetime.now(),
+                    principal_amount=row[5],
+                    interest_amount=row[6],
+                    total_payment=row[7],
+                    remaining_balance=row[8],
+                    status=RepaymentScheduleStatus(row[9]),
+                    paid_amount=row[10] or 0.0,
+                    paid_date=datetime.fromisoformat(row[11]) if row[11] else None,
+                    payment_id=row[12],
+                    created_at=datetime.fromisoformat(row[13]) if row[13] else datetime.now(),
+                    updated_at=datetime.fromisoformat(row[14]) if row[14] else datetime.now()
+                )
+                schedules.append(schedule)
+
+            conn.close()
+            return schedules
+        except Exception as e:
+            logger.error(f"Error getting upcoming payments: {e}")
+            return []
+
+    def get_overdue_payments(self, customer_id: str = None) -> List[RepaymentSchedule]:
+        """Get overdue payments, optionally filtered by customer."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+
+            if customer_id:
+                cursor.execute('''
+                    SELECT * FROM repayment_schedules
+                    WHERE customer_id = ?
+                      AND status = 'scheduled'
+                      AND due_date < ?
+                    ORDER BY due_date ASC
+                ''', (customer_id, datetime.now()))
+            else:
+                cursor.execute('''
+                    SELECT * FROM repayment_schedules
+                    WHERE status = 'scheduled'
+                      AND due_date < ?
+                    ORDER BY due_date ASC
+                ''', (datetime.now(),))
+
+            schedules = []
+            for row in cursor.fetchall():
+                schedule = RepaymentSchedule(
+                    schedule_id=row[0],
+                    loan_id=row[1],
+                    customer_id=row[2],
+                    installment_number=row[3],
+                    due_date=datetime.fromisoformat(row[4]) if row[4] else datetime.now(),
+                    principal_amount=row[5],
+                    interest_amount=row[6],
+                    total_payment=row[7],
+                    remaining_balance=row[8],
+                    status=RepaymentScheduleStatus(row[9]),
+                    paid_amount=row[10] or 0.0,
+                    paid_date=datetime.fromisoformat(row[11]) if row[11] else None,
+                    payment_id=row[12],
+                    created_at=datetime.fromisoformat(row[13]) if row[13] else datetime.now(),
+                    updated_at=datetime.fromisoformat(row[14]) if row[14] else datetime.now()
+                )
+                schedules.append(schedule)
+
+            conn.close()
+            return schedules
+        except Exception as e:
+            logger.error(f"Error getting overdue payments: {e}")
             return []
 
 class LendingProductService:
@@ -814,25 +1039,122 @@ class LendingProductService:
         else:
             return RiskLevel.VERY_HIGH
     
-    def calculate_loan_terms(self, principal: float, annual_rate: float, 
+    def calculate_loan_terms(self, principal: float, annual_rate: float,
                             term_months: int) -> Dict[str, float]:
         """Calculate loan payment terms."""
         monthly_rate = annual_rate / 100 / 12
-        
+
         if monthly_rate == 0:
             monthly_payment = principal / term_months
         else:
             monthly_payment = principal * (monthly_rate * (1 + monthly_rate) ** term_months) / \
                             ((1 + monthly_rate) ** term_months - 1)
-        
+
         total_amount = monthly_payment * term_months
         total_interest = total_amount - principal
-        
+
         return {
             'monthly_payment': round(monthly_payment, 2),
             'total_amount': round(total_amount, 2),
             'total_interest': round(total_interest, 2)
         }
+
+    def generate_repayment_schedule(self, loan: Loan) -> List[RepaymentSchedule]:
+        """Generate complete amortization schedule for a loan."""
+        schedules = []
+        remaining_balance = loan.principal_amount
+        monthly_rate = loan.interest_rate / 100 / 12
+        current_date = loan.created_at
+
+        for installment_num in range(1, loan.term_months + 1):
+            # Calculate interest for this period
+            interest_amount = remaining_balance * monthly_rate
+
+            # Calculate principal portion
+            principal_amount = loan.monthly_payment - interest_amount
+
+            # Adjust for final payment to handle rounding
+            if installment_num == loan.term_months:
+                principal_amount = remaining_balance
+                total_payment = principal_amount + interest_amount
+
+            else:
+                total_payment = loan.monthly_payment
+
+            # Update remaining balance
+            remaining_balance -= principal_amount
+
+            # Calculate due date (30 days from previous date)
+            due_date = current_date + timedelta(days=30 * installment_num)
+
+            # Create schedule entry
+            schedule_id = self.generate_id("sched")
+            schedule = RepaymentSchedule(
+                schedule_id=schedule_id,
+                loan_id=loan.loan_id,
+                customer_id=loan.customer_id,
+                installment_number=installment_num,
+                due_date=due_date,
+                principal_amount=round(principal_amount, 2),
+                interest_amount=round(interest_amount, 2),
+                total_payment=round(total_payment, 2),
+                remaining_balance=round(max(0, remaining_balance), 2),
+                status=RepaymentScheduleStatus.SCHEDULED
+            )
+
+            schedules.append(schedule)
+
+            # Save to database
+            self.db.save_repayment_schedule(schedule)
+
+        return schedules
+
+    def get_repayment_schedule(self, loan_id: str) -> List[RepaymentSchedule]:
+        """Get repayment schedule for a loan."""
+        return self.db.get_loan_repayment_schedule(loan_id)
+
+    def get_next_payment_due(self, loan_id: str) -> Optional[RepaymentSchedule]:
+        """Get the next scheduled payment for a loan."""
+        schedules = self.db.get_loan_repayment_schedule(loan_id)
+        for schedule in schedules:
+            if schedule.status == RepaymentScheduleStatus.SCHEDULED:
+                return schedule
+        return None
+
+    def mark_schedule_as_paid(self, schedule_id: str, payment_id: str,
+                             amount_paid: float) -> bool:
+        """Mark a repayment schedule entry as paid."""
+        try:
+            # Get the schedule from database
+            schedules = self.db.get_loan_repayment_schedule("")  # Will need to query by schedule_id
+
+            # For now, we'll update via direct SQL
+            conn = sqlite3.connect(self.db.db_path)
+            cursor = conn.cursor()
+
+            cursor.execute('''
+                UPDATE repayment_schedules
+                SET status = ?,
+                    paid_amount = ?,
+                    paid_date = ?,
+                    payment_id = ?,
+                    updated_at = ?
+                WHERE schedule_id = ?
+            ''', (
+                RepaymentScheduleStatus.PAID.value,
+                amount_paid,
+                datetime.now(),
+                payment_id,
+                datetime.now(),
+                schedule_id
+            ))
+
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            logger.error(f"Error marking schedule as paid: {e}")
+            return False
     
     def submit_loan_application(self, customer_id: str, product_id: str,
                                requested_amount: float, requested_term_months: int,
@@ -904,10 +1226,10 @@ class LendingProductService:
     def fund_loan(self, application_id: str) -> Optional[Loan]:
         """Fund an approved loan application."""
         application = self.db.get_loan_application(application_id)
-        
+
         if not application or application.status != LoanStatus.APPROVED:
             return None
-        
+
         # Create loan
         loan_id = self.generate_id("loan")
         loan = Loan(
@@ -922,24 +1244,28 @@ class LendingProductService:
             remaining_balance=application.requested_amount,
             next_payment_due=datetime.now() + timedelta(days=30)
         )
-        
+
         if self.db.save_loan(loan):
             # Update application status
             application.status = LoanStatus.ACTIVE
             application.funded_at = datetime.now()
             application.updated_at = datetime.now()
             self.db.save_loan_application(application)
-            
+
+            # Generate repayment schedule
+            self.generate_repayment_schedule(loan)
+            logger.info(f"Generated repayment schedule for loan {loan_id}")
+
             return loan
         return None
     
     def process_payment(self, loan_id: str, amount: float, payment_method: str = "bank_transfer") -> Optional[Payment]:
         """Process a loan payment."""
         loan = self.db.get_loan(loan_id)
-        
+
         if not loan or loan.status != LoanStatus.ACTIVE:
             return None
-        
+
         # Create payment
         payment_id = self.generate_id("pay")
         payment = Payment(
@@ -951,15 +1277,21 @@ class LendingProductService:
             payment_method=payment_method,
             reference_number=f"REF{payment_id[:8].upper()}"
         )
-        
+
         # Process payment
         if amount >= loan.monthly_payment:
             payment.status = PaymentStatus.COMPLETED
-            
+
             # Update loan balance
             loan.remaining_balance -= amount
             loan.updated_at = datetime.now()
-            
+
+            # Update repayment schedule - mark next scheduled payment as paid
+            next_payment = self.get_next_payment_due(loan_id)
+            if next_payment:
+                self.mark_schedule_as_paid(next_payment.schedule_id, payment_id, amount)
+                logger.info(f"Marked schedule {next_payment.schedule_id} as paid")
+
             # Check if loan is paid off
             if loan.remaining_balance <= 0:
                 loan.status = LoanStatus.PAID_OFF
@@ -967,11 +1299,11 @@ class LendingProductService:
             else:
                 # Update next payment due date
                 loan.next_payment_due = loan.next_payment_due + timedelta(days=30)
-            
+
             self.db.save_loan(loan)
         else:
             payment.status = PaymentStatus.FAILED
-        
+
         if self.db.save_payment(payment):
             return payment
         return None
@@ -1337,6 +1669,68 @@ def get_loan_summary(loan_id):
     """Get loan summary."""
     summary = lending_product_service.get_loan_summary(loan_id)
     return jsonify(summary)
+
+@app.route('/api/loans/<loan_id>/repayment-schedule')
+def get_loan_repayment_schedule(loan_id):
+    """Get repayment schedule for a loan."""
+    schedules = lending_product_service.get_repayment_schedule(loan_id)
+
+    results = []
+    for schedule in schedules:
+        results.append({
+            'schedule_id': schedule.schedule_id,
+            'loan_id': schedule.loan_id,
+            'installment_number': schedule.installment_number,
+            'due_date': schedule.due_date.isoformat(),
+            'principal_amount': schedule.principal_amount,
+            'interest_amount': schedule.interest_amount,
+            'total_payment': schedule.total_payment,
+            'remaining_balance': schedule.remaining_balance,
+            'status': schedule.status.value,
+            'paid_amount': schedule.paid_amount,
+            'paid_date': schedule.paid_date.isoformat() if schedule.paid_date else None,
+            'payment_id': schedule.payment_id
+        })
+
+    return jsonify(results)
+
+@app.route('/api/customers/<customer_id>/upcoming-payments')
+def get_customer_upcoming_payments(customer_id):
+    """Get upcoming payments for a customer."""
+    days_ahead = request.args.get('days', default=30, type=int)
+    schedules = lending_product_service.db.get_upcoming_payments(customer_id, days_ahead)
+
+    results = []
+    for schedule in schedules:
+        results.append({
+            'schedule_id': schedule.schedule_id,
+            'loan_id': schedule.loan_id,
+            'installment_number': schedule.installment_number,
+            'due_date': schedule.due_date.isoformat(),
+            'total_payment': schedule.total_payment,
+            'status': schedule.status.value
+        })
+
+    return jsonify(results)
+
+@app.route('/api/customers/<customer_id>/overdue-payments')
+def get_customer_overdue_payments(customer_id):
+    """Get overdue payments for a customer."""
+    schedules = lending_product_service.db.get_overdue_payments(customer_id)
+
+    results = []
+    for schedule in schedules:
+        results.append({
+            'schedule_id': schedule.schedule_id,
+            'loan_id': schedule.loan_id,
+            'installment_number': schedule.installment_number,
+            'due_date': schedule.due_date.isoformat(),
+            'total_payment': schedule.total_payment,
+            'days_overdue': (datetime.now() - schedule.due_date).days,
+            'status': schedule.status.value
+        })
+
+    return jsonify(results)
 
 @app.route('/api/health')
 def health_check():

@@ -17,9 +17,10 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from lending_product_service import (
-    LoanStatus, PaymentStatus, LoanType, RiskLevel, Customer, LoanProduct,
-    LoanApplication, Loan, Payment, CreditReport, LendingProductDatabase,
-    LendingProductService, lending_product_service
+    LoanStatus, PaymentStatus, LoanType, RiskLevel, RepaymentScheduleStatus,
+    Customer, LoanProduct, LoanApplication, Loan, Payment, CreditReport,
+    RepaymentSchedule, LendingProductDatabase, LendingProductService,
+    lending_product_service
 )
 
 class TestLoanStatus(unittest.TestCase):
@@ -1660,6 +1661,421 @@ class TestAdditionalCoverage(unittest.TestCase):
         self.assertGreater(terms['monthly_payment'], 0)
         self.assertGreater(terms['total_interest'], 0)
         self.assertGreater(terms['total_amount'], 50000.0)
+
+class TestRepaymentSchedule(unittest.TestCase):
+    """Test repayment schedule functionality."""
+
+    def setUp(self):
+        """Set up test environment."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = LendingProductService(self.temp_db.name)
+
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+
+    def test_repayment_schedule_status_enum(self):
+        """Test RepaymentScheduleStatus enum values."""
+        self.assertEqual(RepaymentScheduleStatus.SCHEDULED.value, "scheduled")
+        self.assertEqual(RepaymentScheduleStatus.PAID.value, "paid")
+        self.assertEqual(RepaymentScheduleStatus.PARTIALLY_PAID.value, "partially_paid")
+        self.assertEqual(RepaymentScheduleStatus.OVERDUE.value, "overdue")
+        self.assertEqual(RepaymentScheduleStatus.WAIVED.value, "waived")
+
+    def test_repayment_schedule_creation(self):
+        """Test creating a repayment schedule entry."""
+        schedule = RepaymentSchedule(
+            schedule_id="sched_123",
+            loan_id="loan_123",
+            customer_id="cust_123",
+            installment_number=1,
+            due_date=datetime.now() + timedelta(days=30),
+            principal_amount=300.0,
+            interest_amount=22.67,
+            total_payment=322.67,
+            remaining_balance=9700.0
+        )
+
+        self.assertEqual(schedule.schedule_id, "sched_123")
+        self.assertEqual(schedule.loan_id, "loan_123")
+        self.assertEqual(schedule.installment_number, 1)
+        self.assertEqual(schedule.status, RepaymentScheduleStatus.SCHEDULED)
+        self.assertEqual(schedule.paid_amount, 0.0)
+        self.assertIsNone(schedule.paid_date)
+
+    def test_generate_repayment_schedule(self):
+        """Test generating complete repayment schedule."""
+        # Create customer
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test@example.com",
+            phone="123-456-7890",
+            ssn="123-45-6789",
+            date_of_birth=datetime(1980, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            annual_income=75000.0,
+            employment_status="employed"
+        )
+
+        # Submit and approve loan application
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=10000.0,
+            requested_term_months=12,
+            purpose="Test loan"
+        )
+
+        self.assertIsNotNone(application)
+        self.assertEqual(application.status, LoanStatus.APPROVED)
+
+        # Fund loan (should automatically generate schedule)
+        loan = self.service.fund_loan(application.application_id)
+        self.assertIsNotNone(loan)
+
+        # Get repayment schedule
+        schedules = self.service.get_repayment_schedule(loan.loan_id)
+
+        # Verify schedule was generated correctly
+        self.assertEqual(len(schedules), 12)  # 12 months
+        self.assertEqual(schedules[0].installment_number, 1)
+        self.assertEqual(schedules[11].installment_number, 12)
+
+        # Verify decreasing balance
+        for i in range(len(schedules) - 1):
+            self.assertGreater(schedules[i].remaining_balance,
+                             schedules[i + 1].remaining_balance)
+
+        # Verify final balance is zero
+        self.assertEqual(schedules[-1].remaining_balance, 0.0)
+
+    def test_repayment_schedule_amortization(self):
+        """Test that amortization schedule is mathematically correct."""
+        # Create customer
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test2@example.com",
+            phone="123-456-7891",
+            ssn="123-45-6790",
+            date_of_birth=datetime(1980, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            annual_income=75000.0,
+            employment_status="employed"
+        )
+
+        # Submit and fund loan
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=12000.0,
+            requested_term_months=24,
+            purpose="Test loan"
+        )
+
+        loan = self.service.fund_loan(application.application_id)
+        self.assertIsNotNone(loan)
+
+        # Get repayment schedule
+        schedules = self.service.get_repayment_schedule(loan.loan_id)
+
+        # Verify sum of principal equals loan amount
+        total_principal = sum(s.principal_amount for s in schedules)
+        self.assertAlmostEqual(total_principal, loan.principal_amount, places=2)
+
+        # Verify each payment equals monthly payment (except possibly last)
+        for schedule in schedules[:-1]:
+            self.assertAlmostEqual(schedule.total_payment, loan.monthly_payment, places=2)
+
+    def test_get_next_payment_due(self):
+        """Test getting next payment due."""
+        # Create and fund loan
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test3@example.com",
+            phone="123-456-7892",
+            ssn="123-45-6791",
+            date_of_birth=datetime(1980, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            annual_income=75000.0,
+            employment_status="employed"
+        )
+
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=5000.0,
+            requested_term_months=12,
+            purpose="Test loan"
+        )
+
+        loan = self.service.fund_loan(application.application_id)
+
+        # Get next payment
+        next_payment = self.service.get_next_payment_due(loan.loan_id)
+
+        self.assertIsNotNone(next_payment)
+        self.assertEqual(next_payment.installment_number, 1)
+        self.assertEqual(next_payment.status, RepaymentScheduleStatus.SCHEDULED)
+
+    def test_mark_schedule_as_paid(self):
+        """Test marking a schedule entry as paid."""
+        # Create and fund loan
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test4@example.com",
+            phone="123-456-7893",
+            ssn="123-45-6792",
+            date_of_birth=datetime(1980, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            annual_income=75000.0,
+            employment_status="employed"
+        )
+
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=5000.0,
+            requested_term_months=12,
+            purpose="Test loan"
+        )
+
+        loan = self.service.fund_loan(application.application_id)
+        next_payment = self.service.get_next_payment_due(loan.loan_id)
+
+        # Mark as paid
+        result = self.service.mark_schedule_as_paid(
+            next_payment.schedule_id,
+            "pay_123",
+            loan.monthly_payment
+        )
+
+        self.assertTrue(result)
+
+        # Verify it's marked as paid
+        schedules = self.service.get_repayment_schedule(loan.loan_id)
+        paid_schedule = schedules[0]
+        self.assertEqual(paid_schedule.status, RepaymentScheduleStatus.PAID)
+        self.assertEqual(paid_schedule.payment_id, "pay_123")
+        self.assertEqual(paid_schedule.paid_amount, loan.monthly_payment)
+
+    def test_process_payment_updates_schedule(self):
+        """Test that processing a payment updates the repayment schedule."""
+        # Create and fund loan
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test5@example.com",
+            phone="123-456-7894",
+            ssn="123-45-6793",
+            date_of_birth=datetime(1980, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            annual_income=75000.0,
+            employment_status="employed"
+        )
+
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=5000.0,
+            requested_term_months=12,
+            purpose="Test loan"
+        )
+
+        loan = self.service.fund_loan(application.application_id)
+
+        # Process first payment
+        payment = self.service.process_payment(
+            loan_id=loan.loan_id,
+            amount=loan.monthly_payment
+        )
+
+        self.assertIsNotNone(payment)
+        self.assertEqual(payment.status, PaymentStatus.COMPLETED)
+
+        # Verify schedule was updated
+        schedules = self.service.get_repayment_schedule(loan.loan_id)
+        first_schedule = schedules[0]
+
+        self.assertEqual(first_schedule.status, RepaymentScheduleStatus.PAID)
+        self.assertEqual(first_schedule.payment_id, payment.payment_id)
+
+    def test_get_upcoming_payments(self):
+        """Test getting upcoming payments for a customer."""
+        # Create and fund loan
+        customer = self.service.create_customer(
+            first_name="Test",
+            last_name="User",
+            email="test6@example.com",
+            phone="123-456-7895",
+            ssn="123-45-6794",
+            date_of_birth=datetime(1980, 1, 1),
+            address="123 Main St",
+            city="Anytown",
+            state="CA",
+            zip_code="12345",
+            annual_income=75000.0,
+            employment_status="employed"
+        )
+
+        application = self.service.submit_loan_application(
+            customer_id=customer.customer_id,
+            product_id="personal_001",
+            requested_amount=5000.0,
+            requested_term_months=12,
+            purpose="Test loan"
+        )
+
+        loan = self.service.fund_loan(application.application_id)
+
+        # Get upcoming payments
+        upcoming = self.service.db.get_upcoming_payments(customer.customer_id, days_ahead=60)
+
+        # Should have at least 2 payments due within 60 days
+        self.assertGreaterEqual(len(upcoming), 2)
+        self.assertEqual(upcoming[0].status, RepaymentScheduleStatus.SCHEDULED)
+
+    def test_database_save_repayment_schedule(self):
+        """Test saving repayment schedule to database."""
+        schedule = RepaymentSchedule(
+            schedule_id="sched_test",
+            loan_id="loan_test",
+            customer_id="cust_test",
+            installment_number=1,
+            due_date=datetime.now() + timedelta(days=30),
+            principal_amount=300.0,
+            interest_amount=22.67,
+            total_payment=322.67,
+            remaining_balance=9700.0
+        )
+
+        result = self.service.db.save_repayment_schedule(schedule)
+        self.assertTrue(result)
+
+        # Retrieve and verify
+        schedules = self.service.db.get_loan_repayment_schedule("loan_test")
+        self.assertEqual(len(schedules), 1)
+        self.assertEqual(schedules[0].schedule_id, "sched_test")
+
+    def test_database_error_handling_save_repayment_schedule(self):
+        """Test database error handling in save_repayment_schedule."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+
+            schedule = RepaymentSchedule(
+                schedule_id="sched_test",
+                loan_id="loan_test",
+                customer_id="cust_test",
+                installment_number=1,
+                due_date=datetime.now(),
+                principal_amount=300.0,
+                interest_amount=22.67,
+                total_payment=322.67,
+                remaining_balance=9700.0
+            )
+
+            result = self.service.db.save_repayment_schedule(schedule)
+            self.assertFalse(result)
+
+    def test_database_error_handling_get_loan_repayment_schedule(self):
+        """Test database error handling in get_loan_repayment_schedule."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+
+            result = self.service.db.get_loan_repayment_schedule("loan_test")
+            self.assertEqual(result, [])
+
+    def test_database_error_handling_get_upcoming_payments(self):
+        """Test database error handling in get_upcoming_payments."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+
+            result = self.service.db.get_upcoming_payments("cust_test")
+            self.assertEqual(result, [])
+
+    def test_database_error_handling_get_overdue_payments(self):
+        """Test database error handling in get_overdue_payments."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_conn = Mock()
+            mock_cursor = Mock()
+            mock_conn.cursor.return_value = mock_cursor
+            mock_cursor.execute.side_effect = Exception("Database error")
+            mock_connect.return_value = mock_conn
+
+            result = self.service.db.get_overdue_payments()
+            self.assertEqual(result, [])
+
+class TestRepaymentScheduleAPI(unittest.TestCase):
+    """Test repayment schedule API endpoints."""
+
+    def setUp(self):
+        """Set up test environment."""
+        from lending_product_service import app
+        app.config['TESTING'] = True
+        self.client = app.test_client()
+
+    def test_get_loan_repayment_schedule_api(self):
+        """Test get repayment schedule API endpoint."""
+        response = self.client.get('/api/loans/nonexistent/repayment-schedule')
+        self.assertEqual(response.status_code, 200)
+
+        schedules = response.get_json()
+        self.assertIsInstance(schedules, list)
+
+    def test_get_upcoming_payments_api(self):
+        """Test get upcoming payments API endpoint."""
+        response = self.client.get('/api/customers/cust_test/upcoming-payments')
+        self.assertEqual(response.status_code, 200)
+
+        payments = response.get_json()
+        self.assertIsInstance(payments, list)
+
+    def test_get_upcoming_payments_api_with_days_param(self):
+        """Test get upcoming payments API with days parameter."""
+        response = self.client.get('/api/customers/cust_test/upcoming-payments?days=60')
+        self.assertEqual(response.status_code, 200)
+
+        payments = response.get_json()
+        self.assertIsInstance(payments, list)
+
+    def test_get_overdue_payments_api(self):
+        """Test get overdue payments API endpoint."""
+        response = self.client.get('/api/customers/cust_test/overdue-payments')
+        self.assertEqual(response.status_code, 200)
+
+        payments = response.get_json()
+        self.assertIsInstance(payments, list)
 
 if __name__ == '__main__':
     unittest.main()
