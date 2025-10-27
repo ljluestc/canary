@@ -1642,7 +1642,7 @@ class TestIntegration(unittest.TestCase):
         
         # Add another user to the document
         other_user = self.service.create_user("collaborator", "collab@example.com", "Collab", "User")
-        self.service.share_document(doc['id'], self.test_user.id, other_user.id, "write")
+        self.service.share_document(doc['id'], self.test_user.id, other_user.id, "edit")
         
         # Simulate collaborative editing
         change1 = DocumentChange(
