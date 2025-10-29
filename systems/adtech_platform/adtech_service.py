@@ -838,9 +838,13 @@ class AdTechService:
             currency=currency
         )
         
-        if self.db.save_advertiser(advertiser):
-            return advertiser
-        return None
+        try:
+            if self.db.save_advertiser(advertiser):
+                return advertiser
+            return None
+        except Exception as e:
+            logger.error(f"Error creating advertiser: {e}")
+            return None
     
     def get_advertiser(self, advertiser_id: str) -> Optional[Advertiser]:
         """Get advertiser by ID."""
@@ -871,9 +875,13 @@ class AdTechService:
             end_date=datetime.now() + timedelta(days=30)
         )
         
-        if self.db.save_campaign(campaign):
-            return campaign
-        return None
+        try:
+            if self.db.save_campaign(campaign):
+                return campaign
+            return None
+        except Exception as e:
+            logger.error(f"Error creating campaign: {e}")
+            return None
     
     def get_campaign(self, campaign_id: str) -> Optional[Campaign]:
         """Get campaign by ID."""
@@ -901,9 +909,13 @@ class AdTechService:
             bid_amount=bid_amount
         )
         
-        if self.db.save_ad_group(ad_group):
-            return ad_group
-        return None
+        try:
+            if self.db.save_ad_group(ad_group):
+                return ad_group
+            return None
+        except Exception as e:
+            logger.error(f"Error creating ad group: {e}")
+            return None
     
     def get_ad_groups_by_campaign(self, campaign_id: str) -> List[AdGroup]:
         """Get ad groups by campaign."""
@@ -946,9 +958,13 @@ class AdTechService:
             video_url=video_url
         )
         
-        if self.db.save_ad(ad):
-            return ad
-        return None
+        try:
+            if self.db.save_ad(ad):
+                return ad
+            return None
+        except Exception as e:
+            logger.error(f"Error creating ad: {e}")
+            return None
     
     def get_ads_by_ad_group(self, ad_group_id: str) -> List[Ad]:
         """Get ads by ad group."""

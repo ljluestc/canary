@@ -10,6 +10,7 @@ import tempfile
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from unittest.mock import patch
 
 # Add the current directory to the Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -815,6 +816,129 @@ class TestPerformance(unittest.TestCase):
         for dataset in datasets:
             retrieved = self.service.db.get_dataset(dataset.dataset_id)
             self.assertIsNotNone(retrieved)
+
+class TestCausalInferenceErrorHandling(unittest.TestCase):
+    """Test error handling scenarios."""
+    
+    def setUp(self):
+        """Set up test database."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = CausalInferenceService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_database_error_handling_save_dataset(self):
+        """Test database error handling when saving dataset."""
+        # Create test data
+        data = pd.DataFrame({
+            'x1': [1, 2, 3, 4, 5],
+            'x2': [0.1, 0.2, 0.3, 0.4, 0.5],
+            'treatment': [0, 1, 0, 1, 0],
+            'outcome': [10, 15, 12, 18, 14]
+        })
+        
+        # Mock database error
+        with patch.object(self.service.db, 'save_dataset', side_effect=Exception("Database error")):
+            result = self.service.create_dataset(
+                name="Error Dataset",
+                description="Error description",
+                features=['x1', 'x2'],
+                target_variable='outcome',
+                treatment_variable='treatment',
+                data=data
+            )
+            self.assertIsNone(result)
+    
+    def test_invalid_dataset_lookup(self):
+        """Test invalid dataset lookup."""
+        # Test getting non-existent dataset
+        result = self.service.get_dataset("non_existent_dataset")
+        self.assertIsNone(result)
+    
+    def test_invalid_model_lookup(self):
+        """Test invalid model lookup."""
+        # Test getting non-existent model
+        result = self.service.get_model("non_existent_model")
+        self.assertIsNone(result)
+    
+    def test_invalid_treatment_effect_lookup(self):
+        """Test invalid treatment effect lookup."""
+        # Test getting non-existent treatment effect
+        result = self.service.get_treatment_effect("non_existent_effect")
+        self.assertIsNone(result)
+    
+    def test_invalid_dataset_for_model(self):
+        """Test creating model with invalid dataset."""
+        result = self.service.create_model(
+            dataset_id="non_existent_dataset",
+            model_type="propensity_score_matching",
+            parameters={"caliper": 0.1}
+        )
+        self.assertIsNone(result)
+    
+    def test_invalid_model_for_treatment_effect(self):
+        """Test estimating treatment effect with invalid model."""
+        result = self.service.estimate_treatment_effect(
+            model_id="non_existent_model",
+            confidence_level=0.95
+        )
+        self.assertIsNone(result)
+    
+    def test_invalid_data_format(self):
+        """Test creating dataset with invalid data format."""
+        # Test with non-DataFrame data
+        result = self.service.create_dataset(
+            name="Invalid Dataset",
+            description="Invalid description",
+            features=['x1', 'x2'],
+            target_variable='outcome',
+            treatment_variable='treatment',
+            data="not_a_dataframe"
+        )
+        self.assertIsNone(result)
+    
+    def test_missing_columns_in_data(self):
+        """Test creating dataset with missing columns."""
+        # Test with data missing required columns
+        data = pd.DataFrame({
+            'x1': [1, 2, 3, 4, 5],
+            'x2': [0.1, 0.2, 0.3, 0.4, 0.5]
+            # Missing treatment and outcome columns
+        })
+        
+        result = self.service.create_dataset(
+            name="Missing Columns Dataset",
+            description="Missing columns description",
+            features=['x1', 'x2'],
+            target_variable='outcome',
+            treatment_variable='treatment',
+            data=data
+        )
+        self.assertIsNone(result)
+    
+    def test_empty_dataset(self):
+        """Test creating model with empty dataset."""
+        # Create empty dataset
+        data = pd.DataFrame()
+        dataset = self.service.create_dataset(
+            name="Empty Dataset",
+            description="Empty description",
+            features=[],
+            target_variable='outcome',
+            treatment_variable='treatment',
+            data=data
+        )
+        
+        if dataset:
+            result = self.service.create_model(
+                dataset_id=dataset.dataset_id,
+                model_type="propensity_score_matching",
+                parameters={"caliper": 0.1}
+            )
+            self.assertIsNone(result)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1223,5 +1223,266 @@ class TestPerformance(unittest.TestCase):
         # Should complete within reasonable time
         self.assertLess(duration, 2.0)  # 2 seconds for 20 bid requests
 
+class TestAdTechErrorHandling(unittest.TestCase):
+    """Test error handling scenarios."""
+    
+    def setUp(self):
+        """Set up test database."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = AdTechService(self.temp_db.name)
+    
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+    
+    def test_database_error_handling_save_advertiser(self):
+        """Test database error handling when saving advertiser."""
+        # Create advertiser
+        advertiser = Advertiser(
+            advertiser_id="adv_error",
+            name="Error Corp",
+            email="error@error.com",
+            company="Error Corp",
+            industry="Technology",
+            budget=5000.0
+        )
+        
+        # Mock database error
+        with patch.object(self.service.db, 'save_advertiser', side_effect=Exception("Database error")):
+            result = self.service.create_advertiser(
+                name="Error Corp",
+                email="error@error.com",
+                company="Error Corp",
+                industry="Technology",
+                budget=5000.0
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_campaign(self):
+        """Test database error handling when saving campaign."""
+        # Create advertiser first
+        advertiser = self.service.create_advertiser(
+            name="Test Corp",
+            email="test@test.com",
+            company="Test Corp",
+            industry="Technology",
+            budget=10000.0
+        )
+        
+        # Mock database error
+        with patch.object(self.service.db, 'save_campaign', side_effect=Exception("Database error")):
+            result = self.service.create_campaign(
+                advertiser_id=advertiser.advertiser_id,
+                name="Error Campaign",
+                budget=5000.0,
+                start_date=datetime.now(),
+                end_date=datetime.now() + timedelta(days=30)
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_ad_group(self):
+        """Test database error handling when saving ad group."""
+        # Create advertiser and campaign first
+        advertiser = self.service.create_advertiser(
+            name="Test Corp",
+            email="test@test.com",
+            company="Test Corp",
+            industry="Technology",
+            budget=10000.0
+        )
+        campaign = self.service.create_campaign(
+            advertiser_id=advertiser.advertiser_id,
+            name="Test Campaign",
+            budget=5000.0,
+            start_date=datetime.now(),
+            end_date=datetime.now() + timedelta(days=30)
+        )
+        
+        # Mock database error
+        with patch.object(self.service.db, 'save_ad_group', side_effect=Exception("Database error")):
+            result = self.service.create_ad_group(
+                campaign_id=campaign.campaign_id,
+                name="Error Ad Group",
+                description="Error description"
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_ad(self):
+        """Test database error handling when saving ad."""
+        # Create advertiser, campaign, and ad group first
+        advertiser = self.service.create_advertiser(
+            name="Test Corp",
+            email="test@test.com",
+            company="Test Corp",
+            industry="Technology",
+            budget=10000.0
+        )
+        campaign = self.service.create_campaign(
+            advertiser_id=advertiser.advertiser_id,
+            name="Test Campaign",
+            budget=5000.0,
+            start_date=datetime.now(),
+            end_date=datetime.now() + timedelta(days=30)
+        )
+        ad_group = self.service.create_ad_group(
+            campaign_id=campaign.campaign_id,
+            name="Test Ad Group",
+            description="Test description"
+        )
+        
+        # Mock database error
+        with patch.object(self.service.db, 'save_ad', side_effect=Exception("Database error")):
+            result = self.service.create_ad(
+                ad_group_id=ad_group.ad_group_id,
+                name="Error Ad",
+                headline="Error Headline",
+                description="Error Description",
+                display_url="error.com",
+                final_url="https://error.com"
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_targeting(self):
+        """Test database error handling when saving targeting."""
+        # Mock database error
+        with patch.object(self.service.db, 'save_targeting', side_effect=Exception("Database error")):
+            result = self.service.create_targeting(
+                ad_group_id="test_group",
+                targeting_type=TargetingType.DEMOGRAPHIC,
+                criteria={"age": "25-34", "gender": "male"}
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_bid_request(self):
+        """Test database error handling when saving bid request."""
+        # Mock database error
+        with patch.object(self.service.db, 'save_bid_request', side_effect=Exception("Database error")):
+            result = self.service.process_bid_request(
+                ad_group_id="test_group",
+                user_id="test_user",
+                context={"page_url": "test.com"}
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_bid_response(self):
+        """Test database error handling when saving bid response."""
+        # Mock database error
+        with patch.object(self.service.db, 'save_bid_response', side_effect=Exception("Database error")):
+            result = self.service.submit_bid_response(
+                bid_request_id="test_request",
+                ad_id="test_ad",
+                bid_amount=1.0
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_impression(self):
+        """Test database error handling when saving impression."""
+        # Mock database error
+        with patch.object(self.service.db, 'save_impression', side_effect=Exception("Database error")):
+            result = self.service.record_impression(
+                ad_id="test_ad",
+                user_id="test_user",
+                context={"page_url": "test.com"}
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_click(self):
+        """Test database error handling when saving click."""
+        # Mock database error
+        with patch.object(self.service.db, 'save_click', side_effect=Exception("Database error")):
+            result = self.service.record_click(
+                ad_id="test_ad",
+                user_id="test_user",
+                context={"page_url": "test.com"}
+            )
+            self.assertIsNone(result)
+    
+    def test_database_error_handling_save_conversion(self):
+        """Test database error handling when saving conversion."""
+        # Mock database error
+        with patch.object(self.service.db, 'save_conversion', side_effect=Exception("Database error")):
+            result = self.service.record_conversion(
+                ad_id="test_ad",
+                user_id="test_user",
+                conversion_type="purchase",
+                value=100.0
+            )
+            self.assertIsNone(result)
+    
+    def test_invalid_ad_group_lookup(self):
+        """Test invalid ad group lookup."""
+        # Test getting non-existent ad group
+        result = self.service.get_ad_group("non_existent_group")
+        self.assertIsNone(result)
+    
+    def test_invalid_campaign_lookup(self):
+        """Test invalid campaign lookup."""
+        # Test getting non-existent campaign
+        result = self.service.get_campaign("non_existent_campaign")
+        self.assertIsNone(result)
+    
+    def test_invalid_advertiser_lookup(self):
+        """Test invalid advertiser lookup."""
+        # Test getting non-existent advertiser
+        result = self.service.get_advertiser("non_existent_advertiser")
+        self.assertIsNone(result)
+    
+    def test_invalid_ad_lookup(self):
+        """Test invalid ad lookup."""
+        # Test getting non-existent ad
+        result = self.service.get_ad("non_existent_ad")
+        self.assertIsNone(result)
+    
+    def test_invalid_targeting_lookup(self):
+        """Test invalid targeting lookup."""
+        # Test getting non-existent targeting
+        result = self.service.get_targeting("non_existent_targeting")
+        self.assertIsNone(result)
+    
+    def test_invalid_bid_request_lookup(self):
+        """Test invalid bid request lookup."""
+        # Test getting non-existent bid request
+        result = self.service.get_bid_request("non_existent_request")
+        self.assertIsNone(result)
+    
+    def test_invalid_bid_response_lookup(self):
+        """Test invalid bid response lookup."""
+        # Test getting non-existent bid response
+        result = self.service.get_bid_response("non_existent_response")
+        self.assertIsNone(result)
+    
+    def test_invalid_impression_lookup(self):
+        """Test invalid impression lookup."""
+        # Test getting non-existent impression
+        result = self.service.get_impression("non_existent_impression")
+        self.assertIsNone(result)
+    
+    def test_invalid_click_lookup(self):
+        """Test invalid click lookup."""
+        # Test getting non-existent click
+        result = self.service.get_click("non_existent_click")
+        self.assertIsNone(result)
+    
+    def test_invalid_conversion_lookup(self):
+        """Test invalid conversion lookup."""
+        # Test getting non-existent conversion
+        result = self.service.get_conversion("non_existent_conversion")
+        self.assertIsNone(result)
+    
+    def test_analytics_error_handling(self):
+        """Test analytics error handling."""
+        # Mock database error in analytics
+        with patch.object(self.service.db, 'get_campaign_analytics', side_effect=Exception("Database error")):
+            result = self.service.get_campaign_analytics("test_campaign")
+            self.assertIsNone(result)
+    
+    def test_performance_error_handling(self):
+        """Test performance tracking error handling."""
+        # Mock database error in performance tracking
+        with patch.object(self.service.db, 'get_ad_performance', side_effect=Exception("Database error")):
+            result = self.service.get_ad_performance("test_ad")
+            self.assertIsNone(result)
+
 if __name__ == '__main__':
     unittest.main()

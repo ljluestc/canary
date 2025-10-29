@@ -766,9 +766,13 @@ class BookSubscriptionService:
             country=country
         )
         
-        if self.db.save_user(user):
-            return user
-        return None
+        try:
+            if self.db.save_user(user):
+                return user
+            return None
+        except Exception as e:
+            logger.error(f"Error creating user: {e}")
+            return None
     
     def get_user(self, user_id: str) -> Optional[User]:
         """Get user by ID."""
