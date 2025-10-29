@@ -315,8 +315,8 @@ class DNSDatabase:
             
             cursor.execute('''
                 SELECT * FROM dns_cache 
-                WHERE cache_key = ? AND expires_at > datetime('now')
-            ''', (cache_key,))
+                WHERE cache_key = ? AND expires_at > ?
+            ''', (cache_key, datetime.now().isoformat()))
             row = cursor.fetchone()
             
             if row:
