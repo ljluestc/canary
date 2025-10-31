@@ -973,96 +973,112 @@ class AdTechService:
     def process_bid_request(self, ad_group_id: str, user_id: str, page_url: str,
                            user_agent: str, ip_address: str) -> Optional[BidResponse]:
         """Process a bid request and return bid response."""
-        bid_request_id = self.generate_id("bid_req")
-        
-        bid_request = BidRequest(
-            bid_request_id=bid_request_id,
-            ad_group_id=ad_group_id,
-            user_id=user_id,
-            page_url=page_url,
-            user_agent=user_agent,
-            ip_address=ip_address
-        )
-        
-        if not self.db.save_bid_request(bid_request):
+        try:
+            bid_request_id = self.generate_id("bid_req")
+
+            bid_request = BidRequest(
+                bid_request_id=bid_request_id,
+                ad_group_id=ad_group_id,
+                user_id=user_id,
+                page_url=page_url,
+                user_agent=user_agent,
+                ip_address=ip_address
+            )
+
+            if not self.db.save_bid_request(bid_request):
+                return None
+
+            # Get ads for the ad group
+            ads = self.get_ads_by_ad_group(ad_group_id)
+            if not ads:
+                return None
+
+            # Select best ad (simple logic - in real implementation would be more complex)
+            selected_ad = ads[0]  # For simplicity, select first ad
+
+            # Calculate bid price (simple logic)
+            bid_price = random.uniform(0.50, 2.00)  # Random bid between $0.50 and $2.00
+
+            bid_response_id = self.generate_id("bid_resp")
+            bid_response = BidResponse(
+                bid_response_id=bid_response_id,
+                bid_request_id=bid_request_id,
+                ad_id=selected_ad.ad_id,
+                bid_price=bid_price,
+                win=True  # For simplicity, always win
+            )
+
+            if self.db.save_bid_response(bid_response):
+                return bid_response
             return None
-        
-        # Get ads for the ad group
-        ads = self.get_ads_by_ad_group(ad_group_id)
-        if not ads:
+        except Exception as e:
+            logger.error(f"Error processing bid request: {e}")
             return None
-        
-        # Select best ad (simple logic - in real implementation would be more complex)
-        selected_ad = ads[0]  # For simplicity, select first ad
-        
-        # Calculate bid price (simple logic)
-        bid_price = random.uniform(0.50, 2.00)  # Random bid between $0.50 and $2.00
-        
-        bid_response_id = self.generate_id("bid_resp")
-        bid_response = BidResponse(
-            bid_response_id=bid_response_id,
-            bid_request_id=bid_request_id,
-            ad_id=selected_ad.ad_id,
-            bid_price=bid_price,
-            win=True  # For simplicity, always win
-        )
-        
-        if self.db.save_bid_response(bid_response):
-            return bid_response
-        return None
     
     def record_impression(self, ad_id: str, user_id: str, page_url: str,
                          cost: float = 0.0, revenue: float = 0.0) -> Optional[AdImpression]:
         """Record an ad impression."""
-        impression_id = self.generate_id("imp")
-        
-        impression = AdImpression(
-            impression_id=impression_id,
-            ad_id=ad_id,
-            user_id=user_id,
-            page_url=page_url,
-            cost=cost,
-            revenue=revenue
-        )
-        
-        if self.db.save_impression(impression):
-            return impression
-        return None
+        try:
+            impression_id = self.generate_id("imp")
+
+            impression = AdImpression(
+                impression_id=impression_id,
+                ad_id=ad_id,
+                user_id=user_id,
+                page_url=page_url,
+                cost=cost,
+                revenue=revenue
+            )
+
+            if self.db.save_impression(impression):
+                return impression
+            return None
+        except Exception as e:
+            logger.error(f"Error recording impression: {e}")
+            return None
     
     def record_click(self, impression_id: str, ad_id: str, user_id: str,
                     cost: float = 0.0, revenue: float = 0.0) -> Optional[AdClick]:
         """Record an ad click."""
-        click_id = self.generate_id("click")
-        
-        click = AdClick(
-            click_id=click_id,
-            impression_id=impression_id,
-            ad_id=ad_id,
-            user_id=user_id,
-            cost=cost,
-            revenue=revenue
-        )
-        
-        if self.db.save_click(click):
-            return click
-        return None
+        try:
+            click_id = self.generate_id("click")
+
+            click = AdClick(
+                click_id=click_id,
+                impression_id=impression_id,
+                ad_id=ad_id,
+                user_id=user_id,
+                cost=cost,
+                revenue=revenue
+            )
+
+            if self.db.save_click(click):
+                return click
+            return None
+        except Exception as e:
+            logger.error(f"Error recording click: {e}")
+            return None
     
     def record_conversion(self, click_id: str, ad_id: str, user_id: str,
                          conversion_value: float = 0.0) -> Optional[AdConversion]:
         """Record an ad conversion."""
-        conversion_id = self.generate_id("conv")
-        
-        conversion = AdConversion(
-            conversion_id=conversion_id,
-            click_id=click_id,
-            ad_id=ad_id,
-            user_id=user_id,
-            conversion_value=conversion_value
-        )
-        
-        if self.db.save_conversion(conversion):
-            return conversion
-        return None
+        try:
+            conversion_id = self.generate_id("conv")
+
+            conversion = AdConversion(
+                conversion_id=conversion_id,
+                click_id=click_id,
+                ad_id=ad_id,
+                user_id=user_id,
+                conversion_value=conversion_value
+            )
+
+            if self.db.save_conversion(conversion):
+                return conversion
+            return None
+        except Exception as e:
+            logger.error(f"Error recording conversion: {e}")
+            return None
     
     def get_campaign_analytics(self, campaign_id: str, start_date: datetime = None,
                               end_date: datetime = None) -> Dict[str, Any]:
