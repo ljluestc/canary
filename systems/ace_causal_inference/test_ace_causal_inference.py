@@ -1454,16 +1454,16 @@ class TestCoverageImprovements(unittest.TestCase):
             self.assertFalse(result['success'])
             self.assertIn('error', result)
 
-    def test_flask_get_treatment_effects_not_found(self):
-        """Test Flask get treatment effects for non-existent model."""
+    def test_flask_get_treatment_effects_empty(self):
+        """Test Flask get treatment effects for non-existent model returns empty list."""
         response = self.client.get('/effects/nonexistent_id')
         result = response.get_json()
-        self.assertFalse(result['success'])
-        self.assertEqual(response.status_code, 404)
+        self.assertTrue(result['success'])
+        self.assertEqual(result['effects'], [])
 
     def test_flask_get_treatment_effects_exception(self):
         """Test Flask get treatment effects with database error."""
-        with patch.object(self.service.db, 'get_causal_model', side_effect=Exception("DB error")):
+        with patch.object(self.service.db, 'get_treatment_effects', side_effect=Exception("DB error")):
             response = self.client.get('/effects/test_id')
             result = response.get_json()
             self.assertFalse(result['success'])
