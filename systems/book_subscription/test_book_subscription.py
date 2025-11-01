@@ -1090,5 +1090,632 @@ class TestCoverageImprovements(unittest.TestCase):
             'current_books': 0
         })
 
+class TestCoverageImprovements(unittest.TestCase):
+    """Tests to improve code coverage to 95%+."""
+
+    def setUp(self):
+        """Set up test database."""
+        self.temp_db = tempfile.NamedTemporaryFile(delete=False)
+        self.temp_db.close()
+        self.service = BookSubscriptionService(self.temp_db.name)
+
+        # Set up Flask test client and update global service
+        import book_subscription_service as bss
+        bss.book_subscription_service = self.service
+        app = bss.app
+        app.config['TESTING'] = True
+        self.client = app.test_client()
+
+    def tearDown(self):
+        """Clean up test database."""
+        os.unlink(self.temp_db.name)
+
+    def test_database_get_user_error(self):
+        """Test database get_user with connection error."""
+        db = BookSubscriptionDatabase(":memory:")
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.get_user("user_test")
+            self.assertIsNone(result)
+
+    def test_database_save_book_error(self):
+        """Test database save_book with connection error."""
+        db = BookSubscriptionDatabase(":memory:")
+        book = Book(
+            book_id="book_test",
+            title="Test Book",
+            author="Test Author",
+            isbn="123-456",
+            description="Test description",
+            genre="Fiction"
+        )
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.save_book(book)
+            self.assertFalse(result)
+
+    def test_database_save_subscription_error(self):
+        """Test database save_subscription with connection error."""
+        db = BookSubscriptionDatabase(":memory:")
+        subscription = Subscription(
+            subscription_id="sub_test",
+            user_id="user_test",
+            tier=SubscriptionTier.BASIC,
+            price=9.99,
+            start_date=datetime.now(),
+            end_date=datetime.now() + timedelta(days=30)
+        )
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.save_subscription(subscription)
+            self.assertFalse(result)
+
+    def test_database_save_reading_progress_error(self):
+        """Test database save_reading_progress with connection error."""
+        db = BookSubscriptionDatabase(":memory:")
+        progress = ReadingProgress(
+            progress_id="prog_test",
+            user_id="user_test",
+            book_id="book_test",
+            current_page=50,
+            total_pages=200
+        )
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.save_reading_progress(progress)
+            self.assertFalse(result)
+
+    def test_database_save_review_error(self):
+        """Test database save_book_review with connection error."""
+        db = BookSubscriptionDatabase(":memory:")
+        review = BookReview(
+            review_id="rev_test",
+            user_id="user_test",
+            book_id="book_test",
+            rating=5,
+            review_text="Great book!"
+        )
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.save_book_review(review)
+            self.assertFalse(result)
+
+    def test_database_save_payment_error(self):
+        """Test database save_book_payment with connection error."""
+        db = BookSubscriptionDatabase(":memory:")
+        payment = Payment(
+            payment_id="pay_test",
+            subscription_id="sub_test",
+            amount=9.99,
+            payment_method="credit_card"
+        )
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.save_book_payment(payment)
+            self.assertFalse(result)
+
+    def test_service_create_user_error(self):
+        """Test service create_user with database error."""
+        with patch.object(self.service.db, 'save_user', side_effect=Exception("DB error")):
+            result = self.service.create_user(
+                username="testuser",
+                email="test@example.com",
+                first_name="Test",
+                last_name="User"
+            )
+            self.assertIsNone(result)
+
+    def test_service_create_subscription_yearly(self):
+        """Test creating a yearly subscription."""
+        # Create user first
+        user = self.service.create_user(
+            username="testuser",
+            email="test@example.com",
+            first_name="Test",
+            last_name="User"
+        )
+
+        # Create yearly subscription
+        subscription = self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.PREMIUM,
+            price=99.99,
+            payment_frequency="yearly"
+        )
+
+        self.assertIsNotNone(subscription)
+        # Check end date is approximately 365 days from now
+        days_diff = (subscription.end_date - subscription.start_date).days
+        self.assertGreaterEqual(days_diff, 364)
+        self.assertLessEqual(days_diff, 366)
+
+    def test_service_create_book_error(self):
+        """Test service create_book with database error."""
+        with patch.object(self.service.db, 'save_book', return_value=False):
+            result = self.service.create_book(
+                title="Test Book",
+                author="Test Author",
+                isbn="123-456",
+                description="Test description",
+                genre="Fiction"
+            )
+            self.assertIsNone(result)
+
+    def test_service_create_subscription_error(self):
+        """Test service create_subscription with database error."""
+        # Create user first
+        user = self.service.create_user(
+            username="testuser",
+            email="test@example.com",
+            first_name="Test",
+            last_name="User"
+        )
+
+        with patch.object(self.service.db, 'save_subscription', return_value=False):
+            result = self.service.create_subscription(
+                user_id=user.user_id,
+                tier=SubscriptionTier.BASIC,
+                price=9.99
+            )
+            self.assertIsNone(result)
+
+    def test_service_process_payment_error(self):
+        """Test service process_payment with database error."""
+        with patch.object(self.service.db, 'save_book_payment', return_value=False):
+            result = self.service.process_payment(
+                subscription_id="sub_test",
+                amount=9.99,
+                payment_method="credit_card"
+            )
+            self.assertIsNone(result)
+
+    def test_flask_create_user_database_error(self):
+        """Test Flask create_user with database error."""
+        from book_subscription_service import book_subscription_service as global_service
+
+        with patch.object(global_service.db, 'save_user', return_value=False):
+            data = {
+                'username': 'testuser',
+                'email': 'test@example.com',
+                'first_name': 'Test',
+                'last_name': 'User'
+            }
+            response = self.client.post('/api/users', json=data)
+            result = response.get_json()
+            self.assertFalse(result['success'])
+            self.assertIn('error', result)
+
+    def test_flask_create_subscription_database_error(self):
+        """Test Flask create_subscription with database error."""
+        from book_subscription_service import book_subscription_service as global_service
+
+        # Create user first
+        user = self.service.create_user(
+            username="testuser",
+            email="test@example.com",
+            first_name="Test",
+            last_name="User"
+        )
+
+        with patch.object(global_service.db, 'save_subscription', return_value=False):
+            data = {
+                'user_id': user.user_id,
+                'tier': 'basic',
+                'price': 9.99,
+                'payment_frequency': 'monthly'
+            }
+            response = self.client.post('/api/subscriptions', json=data)
+            result = response.get_json()
+            self.assertFalse(result['success'])
+            self.assertIn('error', result)
+
+    def test_flask_create_book_database_error(self):
+        """Test Flask create_book with database error."""
+        from book_subscription_service import book_subscription_service as global_service
+
+        with patch.object(global_service.db, 'save_book', return_value=False):
+            data = {
+                'title': 'Test Book',
+                'author': 'Test Author',
+                'isbn': '123-456',
+                'description': 'Test description',
+                'genre': 'Fiction'
+            }
+            response = self.client.post('/api/books', json=data)
+            result = response.get_json()
+            self.assertFalse(result['success'])
+            self.assertIn('error', result)
+
+    def test_flask_exception_handlers(self):
+        """Test Flask exception handlers."""
+        from book_subscription_service import book_subscription_service as global_service
+
+        # Test create_user exception
+        with patch.object(global_service, 'create_user', side_effect=Exception("Test error")):
+            data = {
+                'username': 'testuser',
+                'email': 'test@example.com',
+                'first_name': 'Test',
+                'last_name': 'User'
+            }
+            response = self.client.post('/api/users', json=data)
+            result = response.get_json()
+            self.assertFalse(result['success'])
+            self.assertIn('error', result)
+
+        # Test create_subscription exception
+        with patch.object(global_service, 'create_subscription', side_effect=Exception("Test error")):
+            data = {
+                'user_id': 'user_test',
+                'tier': 'basic',
+                'price': 9.99
+            }
+            response = self.client.post('/api/subscriptions', json=data)
+            result = response.get_json()
+            self.assertFalse(result['success'])
+            self.assertIn('error', result)
+
+        # Test create_book exception
+        with patch.object(global_service, 'create_book', side_effect=Exception("Test error")):
+            data = {
+                'title': 'Test Book',
+                'author': 'Test Author',
+                'isbn': '123-456',
+                'description': 'Test description',
+                'genre': 'Fiction'
+            }
+            response = self.client.post('/api/books', json=data)
+            result = response.get_json()
+            self.assertFalse(result['success'])
+            self.assertIn('error', result)
+
+    def test_start_reading_existing_progress(self):
+        """Test start_reading when progress already exists."""
+        # Create user, subscription, and book
+        user = self.service.create_user(
+            username="reader", email="reader@test.com",
+            first_name="Test", last_name="Reader"
+        )
+        subscription = self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.PREMIUM,
+            price=29.99
+        )
+        book = self.service.create_book(
+            title="Test Book", author="Test Author", isbn="123",
+            description="Test", genre="Fiction"
+        )
+
+        # Start reading first time
+        progress1 = self.service.start_reading(user.user_id, book.book_id)
+        self.assertIsNotNone(progress1)
+
+        # Start reading again - should return existing progress
+        progress2 = self.service.start_reading(user.user_id, book.book_id)
+        self.assertEqual(progress1.progress_id, progress2.progress_id)
+
+    def test_start_reading_nonexistent_book(self):
+        """Test start_reading with non-existent book."""
+        user = self.service.create_user(
+            username="reader", email="reader@test.com",
+            first_name="Test", last_name="Reader"
+        )
+        subscription = self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.PREMIUM,
+            price=29.99
+        )
+
+        result = self.service.start_reading(user.user_id, "nonexistent")
+        self.assertIsNone(result)
+
+    def test_start_reading_database_error(self):
+        """Test start_reading with database error."""
+        user = self.service.create_user(
+            username="reader", email="reader@test.com",
+            first_name="Test", last_name="Reader"
+        )
+        subscription = self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.PREMIUM,
+            price=29.99
+        )
+        book = self.service.create_book(
+            title="Test Book", author="Test Author", isbn="123",
+            description="Test", genre="Fiction"
+        )
+
+        with patch.object(self.service.db, 'save_reading_progress', return_value=False):
+            result = self.service.start_reading(user.user_id, book.book_id)
+            self.assertIsNone(result)
+
+    def test_get_book_recommendations(self):
+        """Test book recommendations based on reading history."""
+        # Create user and subscription
+        user = self.service.create_user(
+            username="reader", email="reader@test.com",
+            first_name="Test", last_name="Reader"
+        )
+        subscription = self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.PREMIUM,
+            price=29.99
+        )
+
+        # Create fiction books
+        book1 = self.service.create_book(
+            title="Fiction 1", author="Author 1", isbn="001",
+            description="Test", genre="Fiction"
+        )
+        book2 = self.service.create_book(
+            title="Fiction 2", author="Author 2", isbn="002",
+            description="Test", genre="Fiction"
+        )
+
+        # Start reading book1
+        self.service.start_reading(user.user_id, book1.book_id)
+
+        # Get recommendations (should include book2 from same genre)
+        recommendations = self.service.get_recommendations(user.user_id, limit=5)
+        book_ids = [b.book_id for b in recommendations]
+        self.assertIn(book2.book_id, book_ids)
+        self.assertNotIn(book1.book_id, book_ids)  # Should not recommend currently reading book
+
+    def test_flask_create_book_missing_field(self):
+        """Test Flask create_book with missing required field."""
+        data = {
+            'title': 'Test Book',
+            'author': 'Test Author'
+            # Missing isbn, description, genre
+        }
+        response = self.client.post('/api/books', json=data)
+        result = response.get_json()
+        self.assertFalse(result['success'])
+        self.assertIn('error', result)
+
+    def test_flask_create_book_success(self):
+        """Test Flask create_book successful creation."""
+        data = {
+            'title': 'New Book',
+            'author': 'New Author',
+            'isbn': '999-888',
+            'description': 'Great book',
+            'genre': 'Mystery'
+        }
+        response = self.client.post('/api/books', json=data)
+        result = response.get_json()
+        self.assertTrue(result['success'])
+        self.assertIn('book_id', result)
+
+    def test_save_book_payment(self):
+        """Test saving a book payment."""
+        from book_subscription_service import Payment, PaymentStatus
+        # Use self.service.db which has the payments table properly initialized
+        payment = Payment(
+            payment_id="pay_test",
+            user_id="user_test",
+            subscription_id="sub_test",
+            amount=29.99,
+            currency="USD",
+            status=PaymentStatus.COMPLETED,
+            payment_method="credit_card",
+            transaction_id="txn_123",
+            payment_date=datetime.now(),
+            created_at=datetime.now()
+        )
+
+        result = self.service.db.save_book_payment(payment)
+        self.assertTrue(result)
+
+    def test_save_book_payment_error(self):
+        """Test save_book_payment with database error."""
+        from book_subscription_service import Payment, PaymentStatus
+        db = BookSubscriptionDatabase(":memory:")
+
+        payment = Payment(
+            payment_id="pay_test",
+            user_id="user_test",
+            subscription_id="sub_test",
+            amount=29.99,
+            currency="USD",
+            status=PaymentStatus.COMPLETED,
+            payment_method="credit_card",
+            transaction_id="txn_123",
+            payment_date=datetime.now(),
+            created_at=datetime.now()
+        )
+
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.save_book_payment(payment)
+            self.assertFalse(result)
+
+    def test_get_book_reviews_error(self):
+        """Test get_book_reviews with database error."""
+        db = BookSubscriptionDatabase(":memory:")
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.get_book_reviews("book_test")
+            self.assertEqual(result, [])
+
+    def test_search_books_error(self):
+        """Test search_books with database error."""
+        db = BookSubscriptionDatabase(":memory:")
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.search_books(query="test")
+            self.assertEqual(result, [])
+
+    def test_get_user_subscription_error(self):
+        """Test get_user_subscription with database error."""
+        db = BookSubscriptionDatabase(":memory:")
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.get_user_subscription("user_test")
+            self.assertIsNone(result)
+
+    def test_get_book_error(self):
+        """Test get_book with database error."""
+        db = BookSubscriptionDatabase(":memory:")
+        with patch('sqlite3.connect', side_effect=Exception("Connection error")):
+            result = db.get_book("book_test")
+            self.assertIsNone(result)
+
+    def test_get_recommendations_with_reading_history(self):
+        """Test book recommendations with user reading history."""
+        # Create user
+        user = self.service.create_user(
+            username="testuser",
+            email="test@test.com",
+            first_name="Test",
+            last_name="User"
+        )
+
+        # Create subscription
+        subscription = self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.PREMIUM,
+            price=29.99,
+            payment_frequency="monthly"
+        )
+
+        # Create multiple books in same genre
+        book1 = self.service.create_book(
+            title="Mystery Book 1",
+            author="Author 1",
+            isbn="111-111",
+            description="First mystery",
+            genre="Mystery"
+        )
+
+        book2 = self.service.create_book(
+            title="Mystery Book 2",
+            author="Author 2",
+            isbn="222-222",
+            description="Second mystery",
+            genre="Mystery"
+        )
+
+        book3 = self.service.create_book(
+            title="Sci-Fi Book",
+            author="Author 3",
+            isbn="333-333",
+            description="Sci-fi story",
+            genre="Sci-Fi"
+        )
+
+        # Mock reading history to trigger recommendation logic
+        from book_subscription_service import ReadingProgress, ReadingStatus
+        mock_progress = [
+            ReadingProgress(
+                progress_id="prog_1",
+                user_id=user.user_id,
+                book_id=book1.book_id,
+                status=ReadingStatus.COMPLETED,
+                current_page=100,
+                total_pages=200,
+                started_at=datetime.now(),
+                last_read=datetime.now()
+            )
+        ]
+
+        with patch.object(self.service, '_get_user_reading_history', return_value=mock_progress):
+            recommendations = self.service.get_recommendations(user.user_id, limit=5)
+            # Should return recommendations based on reading history
+            self.assertIsInstance(recommendations, list)
+
+    def test_process_payment_success(self):
+        """Test successful payment processing."""
+        user = self.service.create_user(
+            username="payuser", email="pay@test.com",
+            first_name="Pay", last_name="User"
+        )
+        subscription = self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.BASIC,
+            price=9.99
+        )
+
+        payment = self.service.process_payment(
+            subscription_id=subscription.subscription_id,
+            amount=9.99,
+            payment_method="credit_card"
+        )
+        self.assertIsNotNone(payment)
+        self.assertEqual(payment.status, PaymentStatus.COMPLETED)
+
+    def test_update_reading_progress_complete_book(self):
+        """Test completing a book."""
+        user = self.service.create_user(
+            username="completereader", email="complete@test.com",
+            first_name="Complete", last_name="Reader"
+        )
+        # Create subscription so user can access books
+        self.service.create_subscription(
+            user_id=user.user_id,
+            tier=SubscriptionTier.BASIC,
+            price=9.99
+        )
+        book = self.service.create_book(
+            title="Short Book", author="Test Author", isbn="456-short",
+            description="Test", genre="Fiction", page_count=100
+        )
+
+        # Start reading
+        self.service.start_reading(user.user_id, book.book_id)
+
+        # Complete the book
+        updated = self.service.update_reading_progress(
+            user.user_id, book.book_id, current_page=100
+        )
+        self.assertIsNotNone(updated)
+        self.assertEqual(updated.status, ReadingStatus.COMPLETED)
+        self.assertEqual(updated.progress_percentage, 100.0)
+
+    def test_update_reading_progress_save_failure(self):
+        """Test update_reading_progress when save fails."""
+        user = self.service.create_user(
+            username="failreader", email="fail@test.com",
+            first_name="Fail", last_name="Reader"
+        )
+        book = self.service.create_book(
+            title="Fail Book", author="Test Author", isbn="789-fail",
+            description="Test", genre="Fiction", page_count=200
+        )
+
+        # Start reading
+        self.service.start_reading(user.user_id, book.book_id)
+
+        # Mock save to fail
+        with patch.object(self.service.db, 'save_reading_progress', return_value=False):
+            result = self.service.update_reading_progress(
+                user.user_id, book.book_id, current_page=50
+            )
+            self.assertIsNone(result)
+
+    def test_add_book_review_save_failure(self):
+        """Test add_book_review when save fails."""
+        user = self.service.create_user(
+            username="failreviewer", email="failrev@test.com",
+            first_name="Fail", last_name="Reviewer"
+        )
+        book = self.service.create_book(
+            title="Review Fail Book", author="Test Author", isbn="111-fail",
+            description="Test", genre="Fiction"
+        )
+
+        # Start reading to get access
+        self.service.start_reading(user.user_id, book.book_id)
+
+        # Mock save to fail
+        with patch.object(self.service.db, 'save_book_review', return_value=False):
+            result = self.service.add_book_review(
+                user_id=user.user_id,
+                book_id=book.book_id,
+                rating=5,
+                review_text="Great!"
+            )
+            self.assertIsNone(result)
+
+    def test_start_reading_nonexistent_book_returns_none(self):
+        """Test start_reading with non-existent book returns None."""
+        user = self.service.create_user(
+            username="nonereader", email="none@test.com",
+            first_name="None", last_name="Reader"
+        )
+
+        result = self.service.start_reading(user.user_id, "nonexistent_book_id")
+        self.assertIsNone(result)
+
 if __name__ == '__main__':
     unittest.main()

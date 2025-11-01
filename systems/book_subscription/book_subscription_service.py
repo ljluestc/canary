@@ -155,9 +155,9 @@ class BookReview:
 class Payment:
     """Payment model."""
     payment_id: str
-    user_id: str
     subscription_id: str
     amount: float
+    user_id: str = ""
     currency: str = "USD"
     status: PaymentStatus = PaymentStatus.PENDING
     payment_method: str = "credit_card"
@@ -678,6 +678,29 @@ class BookSubscriptionDatabase:
             logger.error(f"Error getting book reviews: {e}")
             return []
 
+    def save_book_payment(self, payment: Payment) -> bool:
+        """Save a subscription payment to database."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT OR REPLACE INTO payments
+                (payment_id, user_id, subscription_id, amount, currency, status,
+                 payment_method, transaction_id, payment_date, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                payment.payment_id, payment.user_id, payment.subscription_id,
+                payment.amount, payment.currency, payment.status.value,
+                payment.payment_method, payment.transaction_id,
+                payment.payment_date, payment.created_at
+            ))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            logger.error(f"Error saving payment: {e}")
+            return False
+
 class BookSubscriptionService:
     """Book subscription service with content management and recommendations."""
     
@@ -931,6 +954,50 @@ class BookSubscriptionService:
             self._update_book_rating(book_id)
             return review
         return None
+
+    def create_book(self, title: str, author: str, isbn: str, description: str, genre: str,
+                     language: str = "en", page_count: int = 0, price: float = 0.0,
+                     subscription_tier_required: SubscriptionTier = SubscriptionTier.BASIC,
+                     publication_date: Optional[datetime] = None, publisher: str = "",
+                     cover_image_url: str = "", book_file_url: str = "") -> Optional[Book]:
+        """Create and persist a new book."""
+        book = Book(
+            book_id=self.generate_id("book"),
+            title=title,
+            author=author,
+            isbn=isbn,
+            description=description,
+            genre=genre,
+            language=language,
+            page_count=page_count,
+            publication_date=publication_date,
+            publisher=publisher,
+            cover_image_url=cover_image_url,
+            book_file_url=book_file_url,
+            subscription_tier_required=subscription_tier_required,
+            price=price,
+        )
+        if self.db.save_book(book):
+            return book
+        return None
+
+    def process_payment(self, subscription_id: str, amount: float,
+                        payment_method: str = "credit_card", currency: str = "USD",
+                        user_id: Optional[str] = "") -> Optional[Payment]:
+        """Process a payment for a subscription."""
+        payment = Payment(
+            payment_id=self.generate_id("pay"),
+            user_id=user_id or "",
+            subscription_id=subscription_id,
+            amount=amount,
+            currency=currency,
+            status=PaymentStatus.PROCESSING,
+            payment_method=payment_method,
+        )
+        if self.db.save_book_payment(payment):
+            payment.status = PaymentStatus.COMPLETED
+            return payment
+        return None
     
     def _update_book_rating(self, book_id: str):
         """Update book's average rating."""
@@ -977,9 +1044,41 @@ class BookSubscriptionService:
     
     def _get_user_reading_history(self, user_id: str) -> List[ReadingProgress]:
         """Get user's reading history."""
-        # This would require a more complex query in a real implementation
-        # For now, return empty list
-        return []
+        try:
+            conn = sqlite3.connect(self.db.db_path)
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT progress_id, user_id, book_id, current_page, total_pages,
+                       progress_percentage, status, last_read, completed_at,
+                       time_spent_minutes, created_at, updated_at
+                FROM reading_progress
+                WHERE user_id = ?
+                ORDER BY last_read DESC
+            ''', (user_id,))
+
+            progress_list = []
+            for row in cursor.fetchall():
+                progress = ReadingProgress(
+                    progress_id=row[0],
+                    user_id=row[1],
+                    book_id=row[2],
+                    current_page=row[3],
+                    total_pages=row[4],
+                    progress_percentage=row[5],
+                    status=ReadingStatus(row[6]),
+                    last_read=datetime.fromisoformat(row[7]) if row[7] else datetime.now(),
+                    completed_at=datetime.fromisoformat(row[8]) if row[8] else None,
+                    time_spent_minutes=row[9],
+                    created_at=datetime.fromisoformat(row[10]) if row[10] else datetime.now(),
+                    updated_at=datetime.fromisoformat(row[11]) if row[11] else datetime.now()
+                )
+                progress_list.append(progress)
+
+            conn.close()
+            return progress_list
+        except Exception as e:
+            logger.error(f"Error getting user reading history: {e}")
+            return []
     
     def get_user_stats(self, user_id: str) -> Dict[str, Any]:
         """Get user statistics."""
@@ -1297,6 +1396,37 @@ def search_books():
         })
     
     return jsonify(results)
+
+@app.route('/api/books', methods=['POST'])
+def create_book_api():
+    """Create a new book."""
+    data = request.get_json()
+    required = ['title', 'author', 'isbn', 'description', 'genre']
+    for f in required:
+        if not data.get(f):
+            return jsonify({'success': False, 'error': f'{f} is required'})
+    try:
+        tier_value = data.get('subscription_tier_required', 'basic')
+        tier = SubscriptionTier(tier_value)
+        book = book_subscription_service.create_book(
+            title=data['title'],
+            author=data['author'],
+            isbn=data['isbn'],
+            description=data['description'],
+            genre=data['genre'],
+            language=data.get('language', 'en'),
+            page_count=int(data.get('page_count', 0)),
+            price=float(data.get('price', 0.0)),
+            subscription_tier_required=tier,
+            publisher=data.get('publisher', ''),
+            cover_image_url=data.get('cover_image_url', ''),
+            book_file_url=data.get('book_file_url', ''),
+        )
+        if book:
+            return jsonify({'success': True, 'book_id': book.book_id})
+        return jsonify({'success': False, 'error': 'Failed to create book'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/api/subscriptions', methods=['POST'])
 def create_subscription():

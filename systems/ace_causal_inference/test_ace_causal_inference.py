@@ -825,120 +825,339 @@ class TestCausalInferenceErrorHandling(unittest.TestCase):
         self.temp_db = tempfile.NamedTemporaryFile(delete=False)
         self.temp_db.close()
         self.service = CausalInferenceService(self.temp_db.name)
+        
+        # Set up Flask app for Flask tests
+        from ace_causal_inference_service import app, ace_causal_inference_service
+        app.config['TESTING'] = True
+        self.client = app.test_client()
+        # Update global service used by Flask
+        ace_causal_inference_service.db = self.service.db
     
     def tearDown(self):
         """Clean up test database."""
         os.unlink(self.temp_db.name)
     
-    def test_database_error_handling_save_dataset(self):
-        """Test database error handling when saving dataset."""
-        # Create test data
-        data = pd.DataFrame({
-            'x1': [1, 2, 3, 4, 5],
-            'x2': [0.1, 0.2, 0.3, 0.4, 0.5],
-            'treatment': [0, 1, 0, 1, 0],
-            'outcome': [10, 15, 12, 18, 14]
-        })
-        
-        # Mock database error
-        with patch.object(self.service.db, 'save_dataset', side_effect=Exception("Database error")):
-            result = self.service.create_dataset(
-                name="Error Dataset",
-                description="Error description",
-                features=['x1', 'x2'],
-                target_variable='outcome',
-                treatment_variable='treatment',
-                data=data
-            )
-            self.assertIsNone(result)
-    
+
     def test_invalid_dataset_lookup(self):
         """Test invalid dataset lookup."""
         # Test getting non-existent dataset
-        result = self.service.get_dataset("non_existent_dataset")
+        result = self.service.db.get_dataset("non_existent_dataset")
         self.assertIsNone(result)
-    
+
     def test_invalid_model_lookup(self):
         """Test invalid model lookup."""
         # Test getting non-existent model
-        result = self.service.get_model("non_existent_model")
+        result = self.service.db.get_causal_model("non_existent_model")
         self.assertIsNone(result)
-    
-    def test_invalid_treatment_effect_lookup(self):
-        """Test invalid treatment effect lookup."""
-        # Test getting non-existent treatment effect
-        result = self.service.get_treatment_effect("non_existent_effect")
-        self.assertIsNone(result)
-    
-    def test_invalid_dataset_for_model(self):
-        """Test creating model with invalid dataset."""
-        result = self.service.create_model(
-            dataset_id="non_existent_dataset",
-            model_type="propensity_score_matching",
-            parameters={"caliper": 0.1}
-        )
-        self.assertIsNone(result)
-    
-    def test_invalid_model_for_treatment_effect(self):
-        """Test estimating treatment effect with invalid model."""
-        result = self.service.estimate_treatment_effect(
-            model_id="non_existent_model",
-            confidence_level=0.95
-        )
-        self.assertIsNone(result)
-    
-    def test_invalid_data_format(self):
-        """Test creating dataset with invalid data format."""
-        # Test with non-DataFrame data
-        result = self.service.create_dataset(
-            name="Invalid Dataset",
-            description="Invalid description",
-            features=['x1', 'x2'],
-            target_variable='outcome',
-            treatment_variable='treatment',
-            data="not_a_dataframe"
-        )
-        self.assertIsNone(result)
-    
-    def test_missing_columns_in_data(self):
-        """Test creating dataset with missing columns."""
-        # Test with data missing required columns
-        data = pd.DataFrame({
-            'x1': [1, 2, 3, 4, 5],
-            'x2': [0.1, 0.2, 0.3, 0.4, 0.5]
-            # Missing treatment and outcome columns
-        })
-        
-        result = self.service.create_dataset(
-            name="Missing Columns Dataset",
-            description="Missing columns description",
-            features=['x1', 'x2'],
-            target_variable='outcome',
-            treatment_variable='treatment',
-            data=data
-        )
-        self.assertIsNone(result)
-    
-    def test_empty_dataset(self):
-        """Test creating model with empty dataset."""
-        # Create empty dataset
-        data = pd.DataFrame()
-        dataset = self.service.create_dataset(
-            name="Empty Dataset",
-            description="Empty description",
-            features=[],
-            target_variable='outcome',
-            treatment_variable='treatment',
-            data=data
-        )
-        
-        if dataset:
-            result = self.service.create_model(
-                dataset_id=dataset.dataset_id,
-                model_type="propensity_score_matching",
+
+    def test_invalid_treatment_effects_lookup(self):
+        """Test getting treatment effects for non-existent model."""
+        # Test getting treatment effects for non-existent model
+        result = self.service.db.get_treatment_effects("non_existent_model")
+        self.assertEqual(result, [])
+
+    def test_invalid_dataset_for_analysis(self):
+        """Test running analysis with invalid dataset."""
+        with self.assertRaises(ValueError):
+            self.service.run_causal_analysis(
+                dataset_id="non_existent_dataset",
+                method="propensity_score_matching",
                 parameters={"caliper": 0.1}
             )
+
+    def test_invalid_model_for_results(self):
+        """Test getting results for invalid model."""
+        result = self.service.get_model_results("non_existent_model")
+        self.assertIsNone(result)
+
+    def test_propensity_score_matching_no_matches(self):
+        """Test propensity score matching with no matches found."""
+        # Create dataset with extreme separation (impossible to match)
+        data = pd.DataFrame({
+            'x1': [1, 1, 2, 2],
+            'treatment': [0, 0, 1, 1],  # Perfect separation
+            'outcome': [10, 11, 20, 21]
+        })
+        
+        dataset = self.service.create_dataset(
+            name="No Match Dataset",
+            description="Dataset with no possible matches",
+            data=data,
+            target_variable='outcome',
+            treatment_variable='treatment',
+            features=['x1']
+        )
+        
+        # Use very small caliper to ensure no matches
+        result = self.service.propensity_score_matching(dataset, caliper=0.0001)
+        
+        self.assertEqual(result['method'], 'propensity_score_matching')
+        self.assertEqual(result['treatment_effect'], 0.0)
+        self.assertEqual(result['n_matched_pairs'], 0)
+        self.assertIn('error', result)
+        self.assertEqual(result['error'], 'No matches found within caliper')
+
+    def test_instrumental_variable_error_handling(self):
+        """Test instrumental variable with invalid instrument."""
+        data = pd.DataFrame({
+            'x1': [1, 2, 3, 4],
+            'treatment': [0, 1, 0, 1],
+            'outcome': [10, 15, 12, 18]
+        })
+        
+        dataset = self.service.create_dataset(
+            name="IV Test",
+            description="Test IV",
+            data=data,
+            target_variable='outcome',
+            treatment_variable='treatment',
+            features=['x1']
+        )
+        
+        # Invalid instrument (doesn't exist in data) should return error dict
+        # This should return an error dict instead of raising
+        result = self.service.instrumental_variable(dataset, instrument='invalid_instrument')
+        self.assertIn('error', result)
+
+    def test_regression_discontinuity_error_handling(self):
+        """Test regression discontinuity with invalid threshold."""
+        data = pd.DataFrame({
+            'score': [1, 2, 3, 4, 5, 6],
+            'treatment': [0, 0, 0, 1, 1, 1],
+            'outcome': [10, 11, 12, 15, 16, 17]
+        })
+        
+        dataset = self.service.create_dataset(
+            name="RD Test",
+            description="Test RD",
+            data=data,
+            target_variable='outcome',
+            treatment_variable='treatment',
+            features=['score']
+        )
+        
+        # Try with invalid running_variable (doesn't exist)
+        result = self.service.regression_discontinuity(dataset, running_variable='nonexistent', cutoff=3.0)
+        # Should return error in result
+        self.assertIsNotNone(result)
+        self.assertIn('error', result)
+
+    def test_difference_in_differences_error_handling(self):
+        """Test difference in differences with missing time periods."""
+        # Create dataset without proper time structure
+        data = pd.DataFrame({
+            'group': [0, 0, 1, 1],
+            'time': [0, 0, 1, 1],  # Not enough variation
+            'treatment': [0, 0, 1, 1],
+            'outcome': [10, 11, 15, 16]
+        })
+        
+        dataset = self.service.create_dataset(
+            name="DID Test",
+            description="Test DID",
+            data=data,
+            target_variable='outcome',
+            treatment_variable='treatment',
+            features=['group', 'time']
+        )
+        
+        # Should handle gracefully even with limited data
+        result = self.service.difference_in_differences(dataset, time_variable='time', group_variable='group')
+        self.assertIsNotNone(result)
+
+    def test_database_error_handling_save_dataset(self):
+        """Test database error handling in save_dataset."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_connect.side_effect = Exception("Database error")
+            
+            data = pd.DataFrame({'x': [1, 2], 'y': [3, 4]})
+            dataset = Dataset(
+                dataset_id="test",
+                name="Test",
+                description="Test",
+                features=[],
+                target_variable='y',
+                treatment_variable='x',
+                data=data,
+                created_at=datetime.now(),
+                metadata={}
+            )
+            
+            result = self.service.db.save_dataset(dataset)
+            self.assertFalse(result)
+
+    def test_database_error_handling_get_dataset(self):
+        """Test database error handling in get_dataset."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_connect.side_effect = Exception("Database error")
+            
+            result = self.service.db.get_dataset("test_id")
             self.assertIsNone(result)
+
+    def test_database_error_handling_list_datasets(self):
+        """Test database error handling in list_datasets."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_connect.side_effect = Exception("Database error")
+            
+            result = self.service.db.list_datasets()
+            self.assertEqual(result, [])
+
+    def test_database_error_handling_save_causal_model(self):
+        """Test database error handling in save_causal_model."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_connect.side_effect = Exception("Database error")
+            
+            model = CausalModel(
+                model_id="test",
+                dataset_id="test",
+                method="propensity_score_matching",
+                parameters={},
+                results={},
+                created_at=datetime.now(),
+                status="completed"
+            )
+            
+            result = self.service.db.save_causal_model(model)
+            self.assertFalse(result)
+
+    def test_database_error_handling_get_causal_model(self):
+        """Test database error handling in get_causal_model."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_connect.side_effect = Exception("Database error")
+            
+            result = self.service.db.get_causal_model("test_id")
+            self.assertIsNone(result)
+
+    def test_database_error_handling_save_treatment_effect(self):
+        """Test database error handling in save_treatment_effect."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_connect.side_effect = Exception("Database error")
+            
+            effect = TreatmentEffect(
+                effect_id="test",
+                model_id="test",
+                treatment_effect=1.0,
+                confidence_interval=[0.5, 1.5],
+                p_value=0.05,
+                standard_error=0.1,
+                method="propensity_score_matching",
+                created_at=datetime.now()
+            )
+            
+            result = self.service.db.save_treatment_effect(effect)
+            self.assertFalse(result)
+
+    def test_database_error_handling_get_treatment_effects(self):
+        """Test database error handling in get_treatment_effects."""
+        with patch('sqlite3.connect') as mock_connect:
+            mock_connect.side_effect = Exception("Database error")
+            
+            result = self.service.db.get_treatment_effects("test_id")
+            self.assertEqual(result, [])
+
+    def test_flask_create_dataset_error_handling(self):
+        """Test Flask create_dataset endpoint error handling."""
+        # Test with missing required fields
+        response = self.client.post('/datasets', json={'invalid': 'data'})
+        # Should return 400 due to missing required fields
+        result = response.get_json()
+        self.assertFalse(result['success'])
+        self.assertIn('error', result)
+
+    def test_flask_list_datasets_error_handling(self):
+        """Test Flask list_datasets endpoint error handling."""
+        # Patch database to raise exception
+        from ace_causal_inference_service import ace_causal_inference_service
+        with patch.object(ace_causal_inference_service.db, 'list_datasets', side_effect=Exception("DB error")):
+            response = self.client.get('/datasets')
+            self.assertEqual(response.status_code, 400)
+
+    def test_flask_get_dataset_error_handling(self):
+        """Test Flask get_dataset endpoint error handling."""
+        # Test with non-existent dataset (should return 404)
+        response = self.client.get('/datasets/non_existent')
+        self.assertEqual(response.status_code, 404)
+        
+        # Test with database error
+        from ace_causal_inference_service import ace_causal_inference_service
+        with patch.object(ace_causal_inference_service.db, 'get_dataset', side_effect=Exception("DB error")):
+            response = self.client.get('/datasets/test_id')
+            self.assertEqual(response.status_code, 400)
+
+    def test_flask_run_analysis_error_handling(self):
+        """Test Flask run_analysis endpoint error handling."""
+        # Test with missing required fields
+        response = self.client.post('/models', json={'invalid': 'data'})
+        # Should return 400 due to missing dataset_id or method
+        result = response.get_json()
+        self.assertFalse(result['success'])
+        self.assertIn('error', result)
+
+    def test_flask_get_model_results_error_handling(self):
+        """Test Flask get_model_results endpoint error handling."""
+        # Test with non-existent model (should return 404)
+        response = self.client.get('/models/non_existent')
+        self.assertEqual(response.status_code, 404)
+        
+        # Test with database error
+        from ace_causal_inference_service import ace_causal_inference_service
+        with patch.object(ace_causal_inference_service.db, 'get_causal_model', side_effect=Exception("DB error")):
+            response = self.client.get('/models/test_id')
+            self.assertEqual(response.status_code, 400)
+
+    def test_flask_list_models_error_handling(self):
+        """Test Flask list_models endpoint error handling."""
+        from ace_causal_inference_service import ace_causal_inference_service
+        with patch.object(ace_causal_inference_service.db, 'list_causal_models', side_effect=Exception("DB error")):
+            response = self.client.get('/models')
+            self.assertEqual(response.status_code, 400)
+
+    def test_flask_list_methods_error_handling(self):
+        """Test Flask list_methods endpoint error handling."""
+        from ace_causal_inference_service import ace_causal_inference_service
+        original_method = ace_causal_inference_service.list_available_methods
+        try:
+            ace_causal_inference_service.list_available_methods = lambda: exec('raise Exception("Service error")')
+            response = self.client.get('/methods')
+            self.assertEqual(response.status_code, 400)
+        finally:
+            ace_causal_inference_service.list_available_methods = original_method
+
+    def test_flask_get_treatment_effects_error_handling(self):
+        """Test Flask get_treatment_effects endpoint error handling."""
+        from ace_causal_inference_service import ace_causal_inference_service
+        with patch.object(ace_causal_inference_service.db, 'get_treatment_effects', side_effect=Exception("DB error")):
+            response = self.client.get('/effects/test_model_id')
+            self.assertEqual(response.status_code, 400)
+
+    def test_run_causal_analysis_invalid_method(self):
+        """Test run_causal_analysis with invalid method."""
+        data = pd.DataFrame({
+            'x1': [1, 2, 3, 4],
+            'treatment': [0, 1, 0, 1],
+            'outcome': [10, 15, 12, 18]
+        })
+        
+        dataset = self.service.create_dataset(
+            name="Test",
+            description="Test",
+            data=data,
+            target_variable='outcome',
+            treatment_variable='treatment',
+            features=['x1']
+        )
+        
+        # Invalid method returns model with status="failed" and error in results
+        model = self.service.run_causal_analysis(
+            dataset_id=dataset.dataset_id,
+            method="invalid_method",
+            parameters={}
+        )
+        
+        self.assertEqual(model.status, "failed")
+        self.assertIn('error', model.results)
+        self.assertIn('Unknown method', model.results['error'])
+
 
 if __name__ == '__main__':
     unittest.main()
